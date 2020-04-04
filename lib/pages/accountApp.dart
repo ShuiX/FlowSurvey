@@ -10,18 +10,87 @@ class Account extends StatefulWidget {
 }
 
 class _AccountState extends State<Account> {
+  final _unController = TextEditingController();
+  final _pwController = TextEditingController();
+
+  Widget _inputText(String labelText, double titleSize, double textSize,
+      TextEditingController textEditingController, double widthFactor, IconData iconData, bool obsecure) {
+    return FractionallySizedBox(
+      widthFactor: widthFactor,
+      child: TextField(
+        obscureText: obsecure,
+        style: TextStyle(
+          fontSize: textSize,
+          color: Colors.black,
+        ),
+        controller: textEditingController,
+        decoration: InputDecoration(
+          icon: Icon(
+            iconData,
+            color: Colors.black,
+          ),
+          labelText: labelText,
+          labelStyle: TextStyle(
+            color: Colors.grey,
+          ),
+          enabledBorder: UnderlineInputBorder(
+            borderSide: BorderSide(color: Colors.grey),
+          ),
+          focusedBorder: UnderlineInputBorder(
+            borderSide: BorderSide(color: Colors.black),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _signInWindow(double titleSize, double textSize, double widthfactor) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: <Widget>[
+        Container(
+          padding: EdgeInsets.only(bottom: 40),
+          child: Text(
+            "Sign In",
+            style: TextStyle(
+              fontSize: titleSize,
+              color: Colors.black,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ),
+        _inputText("Username", titleSize, textSize, _unController, widthfactor, Icons.person, false),
+        _inputText("Password", titleSize, textSize, _pwController, widthfactor, Icons.lock, true),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.black,
       body: Center(
-        child: Text(
-          'Work in Progress',
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 35,
-            fontWeight: FontWeight.bold,
+        child: Card(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
           ),
+          color: Colors.white,
+          child: LayoutBuilder(builder: (context, constraint) {
+            if (constraint.maxWidth < 720) {
+              return FractionallySizedBox(
+                widthFactor: 0.9,
+                heightFactor: 0.75,
+                child: _signInWindow(35, 15, 0.9),
+              );
+            } else {
+              return FractionallySizedBox(
+                widthFactor: 0.6,
+                heightFactor: 0.6,
+                child: _signInWindow(55, 30, 0.5),
+              );
+            }
+          }),
         ),
       ),
       floatingActionButton: Stack(
