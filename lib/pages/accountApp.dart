@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:va_flutter_project/modules/firebaseApp.dart';
 
 class Account extends StatefulWidget {
   final String data;
@@ -13,8 +14,14 @@ class _AccountState extends State<Account> {
   final _unController = TextEditingController();
   final _pwController = TextEditingController();
 
-  Widget _inputText(String labelText, double titleSize, double textSize,
-      TextEditingController textEditingController, double widthFactor, IconData iconData, bool obsecure) {
+  Widget _inputText(
+      String labelText,
+      double titleSize,
+      double textSize,
+      TextEditingController textEditingController,
+      double widthFactor,
+      IconData iconData,
+      bool obsecure) {
     return FractionallySizedBox(
       widthFactor: widthFactor,
       child: TextField(
@@ -60,8 +67,23 @@ class _AccountState extends State<Account> {
             ),
           ),
         ),
-        _inputText("Username", titleSize, textSize, _unController, widthfactor, Icons.person, false),
-        _inputText("Password", titleSize, textSize, _pwController, widthfactor, Icons.lock, true),
+        _inputText("Username", titleSize, textSize, _unController, widthfactor,
+            Icons.person, false),
+        _inputText("Password", titleSize, textSize, _pwController, widthfactor,
+            Icons.lock, true),
+        Container(
+          padding: EdgeInsets.only(top: 30),
+          child: FloatingActionButton(
+            child: Icon(Icons.arrow_forward),
+            backgroundColor: Colors.blue,
+            splashColor: Colors.orange,
+            onPressed: () {
+              if (_unController.text != null && _pwController.text != null) {
+                FirebaseApp().signInWithEmail(_unController.text, _pwController.text);
+              } else {
+              }},
+          ),
+        ),
       ],
     );
   }

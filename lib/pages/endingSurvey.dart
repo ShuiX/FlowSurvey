@@ -18,7 +18,7 @@ class EndingSurvey extends StatefulWidget {
 class _EndingSurveyState extends State<EndingSurvey> {
   @override
   void initState() {
-    FirebaseApp(widget.code).resultsDoc.get().then((onValue) {
+    FirebaseApp(requestCode: widget.code).resultsDoc.get().then((onValue) {
       var resultData = onValue.data();
       var results = jsonDecode(resultData["data"]);
       var tempSave = widget.results;
@@ -36,7 +36,7 @@ class _EndingSurveyState extends State<EndingSurvey> {
       }
       results = jsonEncode(results);
 
-      FirebaseApp(widget.code).resultsDoc.set({"data": results});
+      FirebaseApp(requestCode: widget.code).resultsDoc.set({"data": results});
     });
 
     super.initState();

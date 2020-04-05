@@ -16,7 +16,7 @@ class _HomeAppState extends State<HomeApp> {
   final mySurveyRequestCode = TextEditingController();
 
   void validateSurveyCode(String requestCode, BuildContext context) {
-    FirebaseApp(requestCode).doc.get().then((schemaData) {
+    FirebaseApp(requestCode: requestCode).doc.get().then((schemaData) {
       if (schemaData.exists == true) {
         Navigator.push(
           context,
@@ -170,6 +170,7 @@ class _HomeAppState extends State<HomeApp> {
             alignment: Alignment.bottomRight,
             child: FloatingActionButton(
               child: Icon(Icons.add),
+              heroTag: "CreateButton",
               tooltip: 'Create',
               onPressed: () {
                 Navigator.of(context).pushNamed('/create');
