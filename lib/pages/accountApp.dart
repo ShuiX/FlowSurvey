@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:va_flutter_project/modules/customDialogs.dart';
 import 'package:va_flutter_project/modules/firebaseApp.dart';
+import 'package:va_flutter_project/modules/presetsData.dart';
 
 class Account extends StatefulWidget {
   final String data;
@@ -13,6 +15,47 @@ class Account extends StatefulWidget {
 class _AccountState extends State<Account> {
   final _unController = TextEditingController();
   final _pwController = TextEditingController();
+  bool _validate = false;
+
+  void _signIn() {
+    if (_validateInputData("User", _unController.text) == null &&
+        _validateInputData("", _pwController.text) == null) {
+      setState(() {
+        _validate = false;
+      });
+      FirebaseApp()
+          .signInWithEmail(_unController.text, _pwController.text)
+          .catchError((onError) {
+        showDialog(
+          context: context,
+          builder: (BuildContext context) => CustomDialog(
+            title: "FlowSurvey",
+            content: PresetsData.loginFailed,
+            dialogType: "blueAlert",
+          ),
+        );
+      }).then((value) {
+        print("yippyipp");
+      });
+    } else {
+      setState(() {
+        _validate = true;
+      });
+    }
+  }
+
+  dynamic _validateInputData(String labeltext, String inputData) {
+    if (inputData == "") {
+      return "Enter in your $labeltext data";
+    }
+    if (RegExp(r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
+                .hasMatch(inputData) ==
+            false &&
+        labeltext == "User") {
+      return "Type in your E-Mail!";
+    }
+    return null;
+  }
 
   Widget _inputText(
       String labelText,
@@ -21,7 +64,8 @@ class _AccountState extends State<Account> {
       TextEditingController textEditingController,
       double widthFactor,
       IconData iconData,
-      bool obsecure) {
+      bool obsecure,
+      String hintText) {
     return FractionallySizedBox(
       widthFactor: widthFactor,
       child: TextField(
@@ -36,7 +80,13 @@ class _AccountState extends State<Account> {
             iconData,
             color: Colors.black,
           ),
+          hintText: hintText,
+          hintStyle:
+              TextStyle(color: Colors.blueGrey, fontSize: textSize * 0.75),
           labelText: labelText,
+          errorText: _validate
+              ? _validateInputData(labelText, textEditingController.text)
+              : null,
           labelStyle: TextStyle(
             color: Colors.grey,
           ),
@@ -67,21 +117,18 @@ class _AccountState extends State<Account> {
             ),
           ),
         ),
-        _inputText("Username", titleSize, textSize, _unController, widthfactor,
-            Icons.person, false),
+        _inputText("User", titleSize, textSize, _unController, widthfactor,
+            Icons.person, false, "Type in your E-Mail"),
         _inputText("Password", titleSize, textSize, _pwController, widthfactor,
-            Icons.lock, true),
+            Icons.lock, true, "Type in your password"),
         Container(
-          padding: EdgeInsets.only(top: 30),
+          padding: EdgeInsets.only(top: 60),
           child: FloatingActionButton(
+            heroTag: "Btn1",
             child: Icon(Icons.arrow_forward),
             backgroundColor: Colors.blue,
             splashColor: Colors.orange,
-            onPressed: () {
-              if (_unController.text != null && _pwController.text != null) {
-                FirebaseApp().signInWithEmail(_unController.text, _pwController.text);
-              } else {
-              }},
+            onPressed: () => _signIn(),
           ),
         ),
       ],
