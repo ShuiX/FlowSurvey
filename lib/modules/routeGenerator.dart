@@ -21,7 +21,7 @@ class RouteGenerator {
         break;
       case '/account':
         return MaterialPageRoute(
-          builder: (_) => Account(
+          builder: (_) => AccountSwitch(
             data: args,
           ),
         );

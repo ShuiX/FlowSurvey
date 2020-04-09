@@ -59,7 +59,11 @@ class FirebaseApp {
     return currentUser != null;
   }
 
-  Future<String> getUser() async {
+  Future<String> getUserEmail() async {
     return (_firebaseAuth.currentUser).email;
+  }
+
+  Future<User> getUser() async {
+    return _firebaseAuth.currentUser;
   }
 }
