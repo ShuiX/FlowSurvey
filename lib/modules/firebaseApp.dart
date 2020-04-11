@@ -2,7 +2,8 @@ import 'package:firebase/firebase.dart';
 import 'package:firebase/firestore.dart';
 
 class FirebaseApp {
-  final ref = firestore().collection("suverys");
+  final refSurveys = firestore().collection("suverys");
+  final refUsers = firestore().collection("users");
 
   final String requestCode;
   var temp;
@@ -13,11 +14,15 @@ class FirebaseApp {
   final Auth _firebaseAuth;
 
   DocumentReference get doc {
-    return ref.doc(requestCode);
+    return refSurveys.doc(requestCode);
   }
 
   DocumentReference get resultsDoc {
-    return ref.doc(requestCode).collection("data").doc("results");
+    return refSurveys.doc(requestCode).collection("data").doc("results");
+  }
+
+  Future<QuerySnapshot> get userData async {
+    return refUsers.where("email", "==", await getUserEmail()).get();
   }
 
   Future<UserCredential> signInWithEmail(String email, String password) async {
@@ -60,7 +65,7 @@ class FirebaseApp {
   }
 
   Future<String> getUserEmail() async {
-    return (_firebaseAuth.currentUser).email;
+    return _firebaseAuth.currentUser.email;
   }
 
   Future<User> getUser() async {
