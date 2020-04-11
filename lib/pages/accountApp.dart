@@ -271,7 +271,6 @@ class AccountPage extends StatefulWidget {
 }
 
 class _AccountPageState extends State<AccountPage> {
-
   @override
   void initState() {
     super.initState();
@@ -295,37 +294,56 @@ class _AccountPageState extends State<AccountPage> {
     );
   }
 
+  Widget _accountScreen(AsyncSnapshot<dynamic> snapshot, BuildContext context) {
+    return Card(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(20),
+      ),
+      color: Colors.white,
+      child: LayoutBuilder(builder: (context, constraint) {
+        if (constraint.maxWidth < 720) {
+          return FractionallySizedBox(
+            widthFactor: 0.9,
+            heightFactor: 0.75,
+            child: _accountCard(snapshot.data.docs.single.data()),
+          );
+        } else {
+          return FractionallySizedBox(
+            widthFactor: 0.6,
+            heightFactor: 0.6,
+            child: _accountCard(snapshot.data.docs.single.data()),
+          );
+        }
+      }),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.black,
       body: Center(
-        child: Card(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(20),
-          ),
-          color: Colors.white,
-          child: FutureBuilder(
-            future: FirebaseApp().userData,
+        child: StreamBuilder(
+            stream: FirebaseApp().userData.asStream(),
             builder: (context, snapshot) {
-            Map data = snapshot.data.docs.single.data();
-            return LayoutBuilder(builder: (context, constraint) {
-              if (constraint.maxWidth < 720) {
-                return FractionallySizedBox(
-                  widthFactor: 0.9,
-                  heightFactor: 0.75,
-                  child: _accountCard(data),
-                );
-              } else {
-                return FractionallySizedBox(
-                  widthFactor: 0.6,
-                  heightFactor: 0.6,
-                  child: _accountCard(data),
-                );
+              switch (snapshot.connectionState) {
+                case ConnectionState.done:
+                  return _accountScreen(snapshot, context);
+                  break;
+                case ConnectionState.none:
+                  return Text("Connection failed");
+                  break;
+                case ConnectionState.waiting:
+                  return Text("Waiting");
+                  break;
+                case ConnectionState.active:
+                  return Text("Getting Data");
+                  break;
+                default:
+                  return Text("Error");
+                  break;
               }
-            });
-          }),
-        ),
+            }),
       ),
       floatingActionButton: Stack(
         children: <Widget>[
