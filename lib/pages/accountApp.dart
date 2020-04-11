@@ -34,6 +34,7 @@ class _AccountSwitchState extends State<AccountSwitch> {
               ),
               backgroundColor: Colors.black,
             );
+            break;
         }
       },
     );
@@ -74,7 +75,7 @@ class _SignInState extends State<SignIn> {
           ),
         );
       }).then(
-        (value) {
+        (_) {
           Navigator.of(context).pop();
           Navigator.push(
             context,
@@ -270,16 +271,18 @@ class AccountPage extends StatefulWidget {
 }
 
 class _AccountPageState extends State<AccountPage> {
-  String _bruh;
+  String _bruh = "bruh";
 
   @override
   void initState() {
     super.initState();
-    widget.data.then((value) {
-      setState(() {
-        _bruh = value;
-      });
-    });
+
+    //ignore: sdk_version_set_literal
+    FirebaseApp().getUserEmail().then((value) => {
+          setState(() {
+            _bruh = value;
+          })
+        });
   }
 
   Widget _accountCard() {
