@@ -271,27 +271,22 @@ class AccountPage extends StatefulWidget {
 }
 
 class _AccountPageState extends State<AccountPage> {
-  String _bruh = "bruh";
 
   @override
   void initState() {
     super.initState();
-
-    //ignore: sdk_version_set_literal
-    FirebaseApp().getUserEmail().then((value) => {
-          setState(() {
-            _bruh = value;
-          })
-        });
   }
 
-  Widget _accountCard() {
+  Widget _accountCard(Map data) {
+    String surname = data["surname"];
+    String name = data["name"];
+    String email = data["email"];
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Text(
-          _bruh,
+          "Hello $surname $name, is \"$email\" your E-Mail?",
           style: TextStyle(
             color: Colors.black,
           ),
@@ -310,20 +305,25 @@ class _AccountPageState extends State<AccountPage> {
             borderRadius: BorderRadius.circular(20),
           ),
           color: Colors.white,
-          child: LayoutBuilder(builder: (context, constraint) {
-            if (constraint.maxWidth < 720) {
-              return FractionallySizedBox(
-                widthFactor: 0.9,
-                heightFactor: 0.75,
-                child: _accountCard(),
-              );
-            } else {
-              return FractionallySizedBox(
-                widthFactor: 0.6,
-                heightFactor: 0.6,
-                child: _accountCard(),
-              );
-            }
+          child: FutureBuilder(
+            future: FirebaseApp().userData,
+            builder: (context, snapshot) {
+            Map data = snapshot.data.docs.single.data();
+            return LayoutBuilder(builder: (context, constraint) {
+              if (constraint.maxWidth < 720) {
+                return FractionallySizedBox(
+                  widthFactor: 0.9,
+                  heightFactor: 0.75,
+                  child: _accountCard(data),
+                );
+              } else {
+                return FractionallySizedBox(
+                  widthFactor: 0.6,
+                  heightFactor: 0.6,
+                  child: _accountCard(data),
+                );
+              }
+            });
           }),
         ),
       ),
