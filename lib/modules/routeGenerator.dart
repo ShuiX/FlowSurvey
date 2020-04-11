@@ -9,6 +9,9 @@ class RouteGenerator {
     final args = settings.arguments;
 
     switch (settings.name) {
+      case '':
+        return MaterialPageRoute(builder: (_) => HomeApp());
+        break;
       case '/':
         return MaterialPageRoute(builder: (_) => HomeApp());
         break;
