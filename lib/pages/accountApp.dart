@@ -276,45 +276,114 @@ class _AccountPageState extends State<AccountPage> {
     super.initState();
   }
 
-  Widget _accountCard(Map data) {
+  void _signingOut() {
+    FirebaseApp().signOut().catchError((onError) {
+        showDialog(
+          context: context,
+          builder: (BuildContext context) => CustomDialog(
+            title: "FlowSurvey",
+            content: PresetsData.signoutfailed,
+            dialogType: "blueAlert",
+          ),
+        );
+      }).then(
+        (_) {
+          Navigator.of(context).pop();
+        },
+      );
+  }
+
+  Widget _accountContent(Map data, double titleSize, double subtitleSize,
+      double textSize, BuildContext context) {
+    String username = data["username"];
+    String email = data["email"];
     String surname = data["surname"];
     String name = data["name"];
-    String email = data["email"];
     return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        Text(
-          "Hello $surname $name, is \"$email\" your E-Mail?",
-          style: TextStyle(
-            color: Colors.black,
+        Container(
+          color: Colors.grey,
+          width: MediaQuery.of(context).size.width,
+          height: MediaQuery.of(context).size.height * 0.155,
+          child: Stack(
+            children: [
+              Align(
+                alignment: Alignment.topLeft,
+                child: FractionallySizedBox(
+                  widthFactor: 0.5,
+                  heightFactor: 1,
+                  child: Center(
+                    child: Text(
+                      "@$username",
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontWeight: FontWeight.bold,
+                        fontSize: titleSize,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              Align(
+                alignment: Alignment.topRight,
+                child: FractionallySizedBox(
+                  widthFactor: 0.5,
+                  heightFactor: 1,
+                  child: Center(
+                    child: Text(
+                      email,
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: textSize,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+        Flexible(
+          flex: 3,
+          child: Container(
+            padding: EdgeInsets.symmetric(horizontal: 20),
+            child: Center(
+              child: Text(
+                "Welcome back $surname $name!",
+                style: TextStyle(
+                  fontSize: subtitleSize,
+                  color: Colors.black,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+          ),
+        ),
+        Flexible(
+          flex: 1,
+          child: Container(
+            padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+            alignment: Alignment.centerRight,
+            child: RaisedButton(
+              onPressed: _signingOut,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
+              ),
+              color: Colors.blue,
+              child: Container(
+                width: 200,
+                height: 75,
+                child: Center(
+                  child: Text(
+                    "Sign Out",
+                    style: TextStyle(fontSize: subtitleSize),
+                  ),
+                ),
+              ),
+            ),
           ),
         ),
       ],
-    );
-  }
-
-  Widget _accountScreen(AsyncSnapshot<dynamic> snapshot, BuildContext context) {
-    return Card(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(20),
-      ),
-      color: Colors.white,
-      child: LayoutBuilder(builder: (context, constraint) {
-        if (constraint.maxWidth < 720) {
-          return FractionallySizedBox(
-            widthFactor: 0.9,
-            heightFactor: 0.75,
-            child: _accountCard(snapshot.data.docs.single.data()),
-          );
-        } else {
-          return FractionallySizedBox(
-            widthFactor: 0.6,
-            heightFactor: 0.6,
-            child: _accountCard(snapshot.data.docs.single.data()),
-          );
-        }
-      }),
     );
   }
 
@@ -328,7 +397,39 @@ class _AccountPageState extends State<AccountPage> {
             builder: (context, snapshot) {
               switch (snapshot.connectionState) {
                 case ConnectionState.done:
-                  return _accountScreen(snapshot, context);
+                  return Card(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    color: Colors.white,
+                    child: LayoutBuilder(builder: (context, constraint) {
+                      if (constraint.maxWidth < 720) {
+                        return FractionallySizedBox(
+                          widthFactor: 0.9,
+                          heightFactor: 0.75,
+                          child: _accountContent(
+                            snapshot.data.docs.single.data(),
+                            25,
+                            15,
+                            11,
+                            context,
+                          ),
+                        );
+                      } else {
+                        return FractionallySizedBox(
+                          widthFactor: 0.6,
+                          heightFactor: 0.6,
+                          child: _accountContent(
+                            snapshot.data.docs.single.data(),
+                            50,
+                            30,
+                            16,
+                            context,
+                          ),
+                        );
+                      }
+                    }),
+                  );
                   break;
                 case ConnectionState.none:
                   return Text("Connection failed");
@@ -340,7 +441,7 @@ class _AccountPageState extends State<AccountPage> {
                   return Text("Getting Data");
                   break;
                 default:
-                  return Text("Error");
+                  return Text("Error with Connecting");
                   break;
               }
             }),
