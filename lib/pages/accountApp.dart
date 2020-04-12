@@ -276,8 +276,8 @@ class _AccountPageState extends State<AccountPage> {
     super.initState();
   }
 
-  void _signingOut() {
-    FirebaseApp().signOut().catchError((onError) {
+  void _signingOut() async {
+    await FirebaseApp().signOut().catchError((onError) {
         showDialog(
           context: context,
           builder: (BuildContext context) => CustomDialog(
