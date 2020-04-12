@@ -56,16 +56,18 @@ class _SignInState extends State<SignIn> {
   bool _validateEmail = false;
   bool _validatePassword = false;
 
-  void _signIn() {
+  void _signIn() async {
     if (_validateInputData("User", _unController.text) == null &&
         _validateInputData("", _pwController.text) == null) {
+      bool signInSuccess = true;
       setState(() {
         _validateEmail = false;
         _validatePassword = false;
       });
-      FirebaseApp()
+      await FirebaseApp()
           .signInWithEmail(_unController.text, _pwController.text)
           .catchError((onError) {
+        signInSuccess = false;
         showDialog(
           context: context,
           builder: (BuildContext context) => CustomDialog(
@@ -76,13 +78,15 @@ class _SignInState extends State<SignIn> {
         );
       }).then(
         (_) {
-          Navigator.of(context).pop();
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => AccountPage(),
-            ),
-          );
+          if (signInSuccess == true) {
+            Navigator.of(context).pop();
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => AccountPage(),
+              ),
+            );
+          }
         },
       );
     }
@@ -278,19 +282,19 @@ class _AccountPageState extends State<AccountPage> {
 
   void _signingOut() async {
     await FirebaseApp().signOut().catchError((onError) {
-        showDialog(
-          context: context,
-          builder: (BuildContext context) => CustomDialog(
-            title: "FlowSurvey",
-            content: PresetsData.signoutfailed,
-            dialogType: "blueAlert",
-          ),
-        );
-      }).then(
-        (_) {
-          Navigator.of(context).pop();
-        },
+      showDialog(
+        context: context,
+        builder: (BuildContext context) => CustomDialog(
+          title: "FlowSurvey",
+          content: PresetsData.signoutfailed,
+          dialogType: "blueAlert",
+        ),
       );
+    }).then(
+      (_) {
+        Navigator.of(context).pop();
+      },
+    );
   }
 
   Widget _accountContent(Map data, double titleSize, double subtitleSize,
