@@ -287,7 +287,7 @@ class _AccountPageState extends State<AccountPage> {
         builder: (BuildContext context) => CustomDialog(
           title: "FlowSurvey",
           content: PresetsData.signoutfailed,
-          dialogType: "blueAlert",
+          dialogType: "redAlert",
         ),
       );
     }).then(
@@ -297,8 +297,32 @@ class _AccountPageState extends State<AccountPage> {
     );
   }
 
-  Widget _accountContent(Map data, double titleSize, double subtitleSize,
-      double textSize, BuildContext context) {
+  void _deleteAccoutn() async {
+    await FirebaseApp().deleteUser().catchError((onError) {
+      showDialog(
+        context: context,
+        builder: (BuildContext context) => CustomDialog(
+          title: "FlowSurvey",
+          content: PresetsData.deleteUserFailed,
+          dialogType: "redAlert",
+        ),
+      );
+    }).then(
+      (_) {
+        Navigator.of(context).pop();
+      },
+    );
+  }
+
+  Widget _accountContent(
+    Map data,
+    double titleSize,
+    double subtitleSize,
+    double textSize,
+    BuildContext context,
+    double buttonWidth,
+    double buttonHeight,
+  ) {
     String username = data["username"];
     String email = data["email"];
     String surname = data["surname"];
@@ -365,26 +389,49 @@ class _AccountPageState extends State<AccountPage> {
         ),
         Flexible(
           flex: 1,
-          child: Container(
-            padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-            alignment: Alignment.centerRight,
-            child: RaisedButton(
-              onPressed: _signingOut,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10),
-              ),
-              color: Colors.blue,
-              child: Container(
-                width: 200,
-                height: 75,
-                child: Center(
-                  child: Text(
-                    "Sign Out",
-                    style: TextStyle(fontSize: subtitleSize),
+          child: Row(
+            children: [
+              Container(
+                padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                child: RaisedButton(
+                  onPressed: _signingOut,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  color: Colors.blue,
+                  child: Container(
+                    width: buttonWidth,
+                    height: buttonHeight,
+                    child: Center(
+                      child: Text(
+                        "Sign Out",
+                        style: TextStyle(fontSize: subtitleSize),
+                      ),
+                    ),
                   ),
                 ),
               ),
-            ),
+              Container(
+                padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                child: RaisedButton(
+                  onPressed: _deleteAccoutn,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  color: Colors.red,
+                  child: Container(
+                    width: buttonWidth,
+                    height: buttonHeight,
+                    child: Center(
+                      child: Text(
+                        "Delete Account",
+                        style: TextStyle(fontSize: subtitleSize),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ],
           ),
         ),
       ],
@@ -417,6 +464,8 @@ class _AccountPageState extends State<AccountPage> {
                             15,
                             11,
                             context,
+                            60,
+                            37.5,
                           ),
                         );
                       } else {
@@ -429,6 +478,8 @@ class _AccountPageState extends State<AccountPage> {
                             30,
                             16,
                             context,
+                            250,
+                            75,
                           ),
                         );
                       }

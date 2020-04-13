@@ -59,6 +59,24 @@ class FirebaseApp {
     }
   }
 
+  Future<dynamic> deleteUser() async {
+    try {
+      return Future.wait([
+        refUsers
+            .where("email", "==", await getUserEmail())
+            .get()
+            .then((value) {
+          refUsers.doc(value.docs.single.id).delete();
+        }),
+        _firebaseAuth.currentUser.delete(),
+      ]);
+    } catch (e) {
+      print('Error deleting Account: $e');
+      // return e;
+      throw '$e';
+    }
+  }
+
   Future<bool> isSignedIn() async {
     final currentUser = _firebaseAuth.currentUser;
     return currentUser != null;
