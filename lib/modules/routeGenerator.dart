@@ -17,7 +17,7 @@ class RouteGenerator {
         break;
       case '/create':
         return MaterialPageRoute(
-          builder: (_) => CreateApp(
+          builder: (_) => CreateAppSwitch(
             data: args,
           ),
         );
