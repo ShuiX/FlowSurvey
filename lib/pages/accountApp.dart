@@ -20,9 +20,7 @@ class _AccountSwitchState extends State<AccountSwitch> {
       builder: (context, snapshot) {
         switch (snapshot.data) {
           case true:
-            return AccountPage(
-              data: FirebaseApp().getUserEmail(),
-            );
+            return AccountPage();
             break;
           case false:
             return SignIn();
@@ -266,9 +264,7 @@ class _SignInState extends State<SignIn> {
 }
 
 class AccountPage extends StatefulWidget {
-  final dynamic data;
-
-  AccountPage({Key key, this.data}) : super(key: key);
+  AccountPage({Key key}) : super(key: key);
 
   @override
   _AccountPageState createState() => _AccountPageState();
