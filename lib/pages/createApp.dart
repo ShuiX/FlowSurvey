@@ -71,7 +71,7 @@ class _CreateAppSwitchState extends State<CreateAppSwitch> {
         builder: (context, snapshot) {
           switch (snapshot.data) {
             case true:
-              return CreateAppSwitch();
+              return CreateSurvey();
               break;
             case false:
               return _createUnavailable();
@@ -116,10 +116,12 @@ class CreateSurvey extends StatefulWidget {
 }
 
 class _CreateSurveyState extends State<CreateSurvey> {
-  Widget _scaffold(BuildContext context) {
-    return Center(
-      child: FractionallySizedBox(),
-    );
+  Widget _scaffoldDesktop(BuildContext context) {
+    return Container();
+  }
+
+  Widget _scaffoldMobile(BuildContext context) {
+    return Container();
   }
 
   @override
@@ -127,9 +129,23 @@ class _CreateSurveyState extends State<CreateSurvey> {
     return Center(
       child: LayoutBuilder(builder: (context, constraints) {
         if (constraints.maxWidth < 720) {
-          return _scaffold(context);
+          return Card(
+            color: Colors.white,
+            child: FractionallySizedBox(
+              widthFactor: 0.95,
+              heightFactor: 0.75,
+              child: _scaffoldMobile(context),
+            ),
+          );
         } else {
-          return _scaffold(context);
+          return Card(
+            color: Colors.white,
+            child: FractionallySizedBox(
+              widthFactor: 0.9,
+              heightFactor: 0.9,
+              child: _scaffoldDesktop(context),
+            ),
+          );
         }
       }),
     );
