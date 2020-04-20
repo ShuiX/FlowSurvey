@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:va_flutter_project/modules/firebaseApp.dart';
+import 'package:va_flutter_project/pages/accountApp.dart';
 
 class CreateAppSwitch extends StatefulWidget {
   final String data;
@@ -12,7 +13,53 @@ class CreateAppSwitch extends StatefulWidget {
 
 class _CreateAppSwitchState extends State<CreateAppSwitch> {
   Widget _createUnavailable() {
-    return Center();
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(
+            "You're not signed in yet to use this feature",
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 40,
+            ),
+          ),
+          Container(
+            padding: EdgeInsets.only(top: 30),
+            width: 237,
+            child: RaisedButton(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20),
+              ),
+              onPressed: () {
+                Navigator.pop(context);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => AccountSwitch(),
+                  ),
+                );
+              },
+              child: Row(
+                children: [
+                  Text(
+                    " Sign In",
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 40,
+                    ),
+                  ),
+                  Icon(
+                    Icons.arrow_forward,
+                    size: 60,
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
   @override
