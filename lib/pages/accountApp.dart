@@ -23,7 +23,7 @@ class _AccountSwitchState extends State<AccountSwitch> {
             return AccountPage();
             break;
           case false:
-            return SignIn();
+            return SignOptions();
             break;
           default:
             return Scaffold(
@@ -237,6 +237,147 @@ class _SignInState extends State<SignIn> {
                 widthFactor: 0.6,
                 heightFactor: 0.6,
                 child: _signInWindow(55, 30, 0.5),
+              );
+            }
+          }),
+        ),
+      ),
+      floatingActionButton: Stack(
+        children: <Widget>[
+          Align(
+            alignment: Alignment.topLeft,
+            child: Padding(
+              padding: EdgeInsets.only(left: 20, top: 27),
+              child: IconButton(
+                icon: Icon(Icons.arrow_back),
+                iconSize: 50,
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class SignOptions extends StatefulWidget {
+  SignOptions({Key key}) : super(key: key);
+
+  @override
+  _SignOptionsState createState() => _SignOptionsState();
+}
+
+class _SignOptionsState extends State<SignOptions> {
+  Widget _widget = SignIn();
+  double _signUpOpacity = 1;
+  double _signInOpacity = 0;
+
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      children: [
+        AnimatedSwitcher(
+          duration: Duration(milliseconds: 750),
+          transitionBuilder: (Widget child, Animation<double> animation) =>
+              FadeTransition(
+            opacity: animation,
+            child: child,
+          ),
+          child: _widget,
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            AnimatedOpacity(
+              opacity: _signUpOpacity,
+              duration: Duration(milliseconds: 450),
+              child: Container(
+                alignment: Alignment.bottomCenter,
+                padding: EdgeInsets.only(bottom: 10, left: 5, right: 5),
+                child: RaisedButton(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Text(
+                    "Sign up",
+                    style: TextStyle(),
+                  ),
+                  color: Colors.blue,
+                  onPressed: () {
+                    setState(() {
+                      this._widget = SignUp();
+                      this._signUpOpacity = 0;
+                      this._signInOpacity = 1;
+                    });
+                  },
+                ),
+              ),
+            ),
+            AnimatedOpacity(
+              opacity: _signInOpacity,
+              duration: Duration(milliseconds: 450),
+              child: Container(
+                alignment: Alignment.bottomCenter,
+                padding: EdgeInsets.only(bottom: 10, left: 5, right: 5),
+                child: RaisedButton(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Text(
+                    "Sign In",
+                    style: TextStyle(),
+                  ),
+                  color: Colors.blue,
+                  onPressed: () {
+                    setState(() {
+                      this._widget = SignIn();
+                      this._signInOpacity = 0;
+                      this._signUpOpacity = 1;
+                    });
+                  },
+                ),
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+}
+
+class SignUp extends StatefulWidget {
+  SignUp({Key key}) : super(key: key);
+
+  @override
+  _SignUpState createState() => _SignUpState();
+}
+
+class _SignUpState extends State<SignUp> {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.black,
+      body: Center(
+        child: Card(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+          ),
+          color: Colors.white,
+          child: LayoutBuilder(builder: (context, constraint) {
+            if (constraint.maxWidth < 720) {
+              return FractionallySizedBox(
+                widthFactor: 0.9,
+                heightFactor: 0.75,
+                child: Text("Sign Up"),
+              );
+            } else {
+              return FractionallySizedBox(
+                widthFactor: 0.6,
+                heightFactor: 0.6,
+                child: Text("Sign Up"),
               );
             }
           }),
