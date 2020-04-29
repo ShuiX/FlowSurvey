@@ -356,6 +356,162 @@ class SignUp extends StatefulWidget {
 }
 
 class _SignUpState extends State<SignUp> {
+  final _usernameTextController = TextEditingController();
+  final _nameTextController = TextEditingController();
+  final _surnameTextController = TextEditingController();
+  final _emailTextController = TextEditingController();
+
+  bool _usernameValid = false;
+  bool _nameValid = false;
+  bool _surnameValid = false;
+  bool _emailValid = false;
+
+  void _signUp() async {
+    
+  }
+
+  String _validateInputData(String labelText, String inputData) {
+    if (labelText == "E-Mail") {
+      if (RegExp(r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
+                  .hasMatch(inputData) ==
+              false &&
+          labelText == "User") {
+        return "Invalid E-Mail format";
+      }
+      return null;
+    }
+    if (inputData == "") {
+      return "Enter in your $labelText data";
+    }
+    return null;
+  }
+
+  Widget _inputText(
+      String labelText,
+      double titleSize,
+      double textSize,
+      TextEditingController textEditingController,
+      bool obsecure,
+      String hintText,
+      bool validation) {
+    return Container(
+      width: MediaQuery.of(context).size.width * 0.2,
+      padding: EdgeInsets.symmetric(horizontal: 20),
+      child: TextField(
+        obscureText: obsecure,
+        style: TextStyle(
+          fontSize: textSize,
+          color: Colors.black,
+        ),
+        controller: textEditingController,
+        onSubmitted: (val) => {},
+        onChanged: (val) {
+          setState(() {
+            validation = false;
+          });
+        },
+        decoration: InputDecoration(
+          hintText: hintText,
+          hintStyle:
+              TextStyle(color: Colors.blueGrey, fontSize: textSize * 0.75),
+          labelText: labelText,
+          errorText: validation
+              ? _validateInputData(labelText, textEditingController.text)
+              : null,
+          labelStyle: TextStyle(
+            color: Colors.grey,
+          ),
+          enabledBorder: UnderlineInputBorder(
+            borderSide: BorderSide(color: Colors.grey),
+          ),
+          focusedBorder: UnderlineInputBorder(
+            borderSide: BorderSide(color: Colors.black),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _signUpWindowMobile(double titleSize, double textSize) {
+    return Center(
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(
+            "Mobile",
+            style: TextStyle(
+              color: Colors.black,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _signUpWindowDesktop(
+      double titleSize, double textSize, double widthFactor) {
+    return Center(
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(
+            "Sign Up",
+            style: TextStyle(
+              color: Colors.black,
+              fontSize: titleSize,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          VerticalDivider(
+            color: Colors.black,
+            width: 100,
+          ),
+          Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              _inputText(
+                "Username",
+                titleSize,
+                textSize,
+                _usernameTextController,
+                false,
+                "Create your Username here",
+                _usernameValid,
+              ),
+              _inputText(
+                "E-Mail",
+                titleSize,
+                textSize,
+                _emailTextController,
+                false,
+                "Enter your E-Mail",
+                _emailValid,
+              ),
+              _inputText(
+                "Name",
+                titleSize,
+                textSize,
+                _nameTextController,
+                false,
+                "Enter Name here",
+                _nameValid,
+              ),
+              _inputText(
+                "Surname",
+                titleSize,
+                textSize,
+                _surnameTextController,
+                false,
+                "Enter Surname here",
+                _surnameValid,
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -371,13 +527,13 @@ class _SignUpState extends State<SignUp> {
               return FractionallySizedBox(
                 widthFactor: 0.9,
                 heightFactor: 0.75,
-                child: Text("Sign Up"),
+                child: _signUpWindowMobile(35, 15),
               );
             } else {
               return FractionallySizedBox(
                 widthFactor: 0.6,
                 heightFactor: 0.6,
-                child: Text("Sign Up"),
+                child: _signUpWindowDesktop(55, 30, 0.5),
               );
             }
           }),
