@@ -370,7 +370,7 @@ class _SignUpState extends State<SignUp> {
 
   void _signUp() async {
     if (_usernameTextController.text != "" &&
-        _emailTextController.text != "" &&
+        _validateInputData("E-Mail", _emailTextController.text) == null &&
         _surnameTextController.text != "" &&
         _nameTextController.text != "" &&
         _submitOpacity == 1) {
