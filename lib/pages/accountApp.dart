@@ -369,11 +369,7 @@ class _SignUpState extends State<SignUp> {
   double _submitOpacity = 0;
 
   void _signUp() async {
-    if (_usernameTextController.text != "" &&
-        _validateInputData("E-Mail", _emailTextController.text) == null &&
-        _surnameTextController.text != "" &&
-        _nameTextController.text != "" &&
-        _submitOpacity == 1) {
+    if (_submitOpacity == 1) {
       setState(() {
         _usernameValid = true;
         _surnameValid = true;
@@ -381,6 +377,11 @@ class _SignUpState extends State<SignUp> {
         _emailValid = true;
       });
     }
+    if (_usernameTextController.text != "" &&
+        _validateInputData("E-Mail", _emailTextController.text) == null &&
+        _surnameTextController.text != "" &&
+        _nameTextController.text != "" &&
+        _submitOpacity == 1) {}
   }
 
   String _validateInputData(String labeltext, String inputData) {
