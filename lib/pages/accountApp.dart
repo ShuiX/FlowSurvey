@@ -98,7 +98,7 @@ class _SignInState extends State<SignIn> {
     }
   }
 
-  dynamic _validateInputData(String labeltext, String inputData) {
+  String _validateInputData(String labeltext, String inputData) {
     if (inputData == "") {
       return "Enter in your $labeltext data";
     }
@@ -366,24 +366,47 @@ class _SignUpState extends State<SignUp> {
   bool _surnameValid = false;
   bool _emailValid = false;
 
+  double _submitOpacity = 0;
+
   void _signUp() async {
-    
+    if (_usernameTextController.text != "" &&
+        _emailTextController.text != "" &&
+        _surnameTextController.text != "" &&
+        _nameTextController.text != "" &&
+        _submitOpacity == 1) {
+      setState(() {
+        _usernameValid = true;
+        _surnameValid = true;
+        _nameValid = true;
+        _emailValid = true;
+      });
+    }
   }
 
-  String _validateInputData(String labelText, String inputData) {
-    if (labelText == "E-Mail") {
-      if (RegExp(r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
-                  .hasMatch(inputData) ==
-              false &&
-          labelText == "User") {
-        return "Invalid E-Mail format";
-      }
-      return null;
-    }
+  String _validateInputData(String labeltext, String inputData) {
     if (inputData == "") {
-      return "Enter in your $labelText data";
+      return "Enter in your $labeltext data";
+    }
+    if (RegExp(r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
+                .hasMatch(inputData) ==
+            false &&
+        labeltext == "E-Mail") {
+      return "Invalid E-Mail format";
     }
     return null;
+  }
+
+  void _submitButton() {
+    if (_usernameTextController.text != "" &&
+        _emailTextController.text != "" &&
+        _surnameTextController.text != "" &&
+        _nameTextController.text != "") {
+      setState(() {
+        _submitOpacity = 1;
+      });
+    } else {
+      _submitOpacity = 0;
+    }
   }
 
   Widget _inputText(
@@ -404,11 +427,11 @@ class _SignUpState extends State<SignUp> {
           color: Colors.black,
         ),
         controller: textEditingController,
-        onSubmitted: (val) => {},
         onChanged: (val) {
           setState(() {
             validation = false;
           });
+          _submitButton();
         },
         decoration: InputDecoration(
           hintText: hintText,
@@ -454,58 +477,87 @@ class _SignUpState extends State<SignUp> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text(
-            "Sign Up",
-            style: TextStyle(
-              color: Colors.black,
-              fontSize: titleSize,
-              fontWeight: FontWeight.bold,
+          Expanded(
+            flex: 1,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  "Sign Up",
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontSize: titleSize,
+                    fontWeight: FontWeight.bold,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                Container(
+                  height: 125,
+                  width: 1,
+                ),
+                AnimatedOpacity(
+                  opacity: _submitOpacity,
+                  duration: Duration(milliseconds: 500),
+                  child: RaisedButton(
+                    child: Text("Submit"),
+                    color: Colors.blue,
+                    onPressed: () => _signUp(),
+                  ),
+                ),
+              ],
             ),
           ),
-          VerticalDivider(
-            color: Colors.black,
-            width: 100,
+          Flexible(
+            child: Container(
+              color: Colors.black,
+              width: 1,
+              height: MediaQuery.of(context).size.height * 0.3,
+            ),
           ),
-          Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              _inputText(
-                "Username",
-                titleSize,
-                textSize,
-                _usernameTextController,
-                false,
-                "Create your Username here",
-                _usernameValid,
-              ),
-              _inputText(
-                "E-Mail",
-                titleSize,
-                textSize,
-                _emailTextController,
-                false,
-                "Enter your E-Mail",
-                _emailValid,
-              ),
-              _inputText(
-                "Name",
-                titleSize,
-                textSize,
-                _nameTextController,
-                false,
-                "Enter Name here",
-                _nameValid,
-              ),
-              _inputText(
-                "Surname",
-                titleSize,
-                textSize,
-                _surnameTextController,
-                false,
-                "Enter Surname here",
-                _surnameValid,
-              ),
-            ],
+          Expanded(
+            flex: 2,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                _inputText(
+                  "Username",
+                  titleSize,
+                  textSize,
+                  _usernameTextController,
+                  false,
+                  "Create your Username here",
+                  _usernameValid,
+                ),
+                _inputText(
+                  "E-Mail",
+                  titleSize,
+                  textSize,
+                  _emailTextController,
+                  false,
+                  "Enter your E-Mail",
+                  _emailValid,
+                ),
+                _inputText(
+                  "Name",
+                  titleSize,
+                  textSize,
+                  _nameTextController,
+                  false,
+                  "Enter Name here",
+                  _nameValid,
+                ),
+                _inputText(
+                  "Surname",
+                  titleSize,
+                  textSize,
+                  _surnameTextController,
+                  false,
+                  "Enter Surname here",
+                  _surnameValid,
+                ),
+                RaisedButton(onPressed: null)
+              ],
+            ),
           ),
         ],
       ),
