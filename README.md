@@ -3,4 +3,4 @@ Own Project made with Flutter to be presented for my "Vertiefungsarbeit" as a fi
 
 The application runs on the website: https://flowsurvey-2020.web.app/
 
-The Code for my "Vertiefungsarbeit" Umfrage: "va"
+The Code for my Vertiefungsarbeit Umfrage: "va"
