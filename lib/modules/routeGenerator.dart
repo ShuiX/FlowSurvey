@@ -29,10 +29,10 @@ class RouteGenerator {
           ),
         );
         break;
-      case '/startSurvey':
+      case '/startDemo':
         return MaterialPageRoute(
           builder: (_) => HomeApp(
-            code: args,
+            code: "va",
           ),
         );
         break;
