@@ -597,7 +597,7 @@ class _SignUpState extends State<SignUp> {
                   titleSize,
                   textSize,
                   _passwordTextController,
-                  false,
+                  true,
                   "Enter a Password",
                   _passwordValid,
                 ),
