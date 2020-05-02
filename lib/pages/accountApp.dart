@@ -360,11 +360,13 @@ class _SignUpState extends State<SignUp> {
   final _nameTextController = TextEditingController();
   final _surnameTextController = TextEditingController();
   final _emailTextController = TextEditingController();
+  final _passwordTextController = TextEditingController();
 
   bool _usernameValid = false;
   bool _nameValid = false;
   bool _surnameValid = false;
   bool _emailValid = false;
+  bool _passwordValid = false;
 
   double _submitOpacity = 0;
 
@@ -375,13 +377,64 @@ class _SignUpState extends State<SignUp> {
         _surnameValid = true;
         _nameValid = true;
         _emailValid = true;
+        _passwordValid = true;
       });
     }
     if (_usernameTextController.text != "" &&
         _validateInputData("E-Mail", _emailTextController.text) == null &&
         _surnameTextController.text != "" &&
         _nameTextController.text != "" &&
-        _submitOpacity == 1) {}
+        _passwordTextController.text != "" &&
+        _submitOpacity == 1) {
+      Map<String, dynamic> data = {
+        "email": _emailTextController.text,
+        "surname": _surnameTextController.text,
+        "name": _nameTextController.text,
+        "username": _usernameTextController.text
+      };
+      FirebaseApp().checkUserbyString(_emailTextController.text).then((value) {
+        if (value.docs.isEmpty == false) {
+          showDialog(
+            context: context,
+            builder: (BuildContext context) => CustomDialog(
+              title: "FlowSurvey",
+              content: PresetsData.registringUserExists,
+              dialogType: "blueAlert",
+            ),
+          );
+        } else {
+          bool errorcatch = false;
+          FirebaseApp()
+              .signUp(_emailTextController.text, _passwordTextController.text)
+              .catchError((error) {
+            errorcatch = true;
+            showDialog(
+              context: context,
+              builder: (BuildContext context) => CustomDialog(
+                title: "FlowSurvey",
+                content: PresetsData.somethingFailed,
+                dialogType: "redAlert",
+              ),
+            );
+          }).then((value) {
+            if (errorcatch == false) {
+              FirebaseApp().refUsers.add(data).then((value) {
+                Navigator.pop(context);
+              }).catchError((onError) {
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) => CustomDialog(
+                    title: "FlowSurvey",
+                    content: PresetsData.somethingFailed,
+                    dialogType: "redAlert",
+                  ),
+                );
+              });
+            }
+          });
+        }
+      });
+    }
   }
 
   String _validateInputData(String labeltext, String inputData) {
@@ -401,7 +454,8 @@ class _SignUpState extends State<SignUp> {
     if (_usernameTextController.text != "" &&
         _emailTextController.text != "" &&
         _surnameTextController.text != "" &&
-        _nameTextController.text != "") {
+        _nameTextController.text != "" &&
+        _passwordTextController.text != "") {
       setState(() {
         _submitOpacity = 1;
       });
@@ -539,6 +593,15 @@ class _SignUpState extends State<SignUp> {
                   _emailValid,
                 ),
                 _inputText(
+                  "Password",
+                  titleSize,
+                  textSize,
+                  _passwordTextController,
+                  false,
+                  "Enter a Password",
+                  _passwordValid,
+                ),
+                _inputText(
                   "Name",
                   titleSize,
                   textSize,
@@ -586,7 +649,7 @@ class _SignUpState extends State<SignUp> {
               return FractionallySizedBox(
                 widthFactor: 0.6,
                 heightFactor: 0.6,
-                child: _signUpWindowDesktop(55, 30, 0.5),
+                child: _signUpWindowDesktop(45, 25, 0.5),
               );
             }
           }),

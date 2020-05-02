@@ -6,7 +6,6 @@ class FirebaseApp {
   final refUsers = firestore().collection("users");
 
   final String requestCode;
-  var temp;
 
   FirebaseApp({this.requestCode, Auth firebaseAuth})
       : _firebaseAuth = firebaseAuth ?? auth();
@@ -59,13 +58,14 @@ class FirebaseApp {
     }
   }
 
+  Future<QuerySnapshot> checkUserbyString(String email) async {
+    return refUsers.where("email", "==", email).get();
+  }
+
   Future<dynamic> deleteUser() async {
     try {
       return Future.wait([
-        refUsers
-            .where("email", "==", await getUserEmail())
-            .get()
-            .then((value) {
+        refUsers.where("email", "==", await getUserEmail()).get().then((value) {
           refUsers.doc(value.docs.single.id).delete();
         }),
         _firebaseAuth.currentUser.delete(),
