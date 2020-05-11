@@ -124,6 +124,14 @@ class _CreateSurveyState extends State<CreateSurvey> {
     return Container();
   }
 
+  Widget _list(BuildContext context) {
+    return StreamBuilder(
+      builder: (context, snapshot) {
+        return Container();
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Center(
