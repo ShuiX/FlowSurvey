@@ -12,8 +12,43 @@ class SurveyCard extends StatefulWidget {
 }
 
 class _SurveyCardState extends State<SurveyCard> {
+  _inputOptions(BuildContext context, String type, Map data, String route) {
+    switch (type) {
+      case 'selection':
+        return _selectionOption(context, data, route);
+        break;
+      case 'sentence':
+        return _sentenceOption(context, data, route);
+        break;
+      case 'checkbox':
+        return _checkboxOption(context, data, route);
+        break;
+      case 'info':
+        return _contentOption(context, data, route);
+        break;
+      default:
+        break;
+    }
+  }
+
+  Widget _checkboxOption(BuildContext context, Map data, String route) {
+    return Container();
+  }
+
+  Widget _contentOption(BuildContext context, Map data, String route) {
+    return Container();
+  }
+
+  Widget _sentenceOption(BuildContext context, Map data, String route) {
+    return Container();
+  }
+
+  Widget _selectionOption(BuildContext context, Map data, String route) {
+    return Container();
+  }
+
   @override
   Widget build(BuildContext context) {
-    throw UnimplementedError();
+    return _inputOptions(context, "type", {}, "route");
   }
 }
