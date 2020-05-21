@@ -12,43 +12,62 @@ class SurveyCard extends StatefulWidget {
 }
 
 class _SurveyCardState extends State<SurveyCard> {
-  _inputOptions(BuildContext context, String type, Map data, String route) {
-    switch (type) {
+  Widget _inputOptions() {
+    switch (widget.data["type"]) {
       case 'selection':
-        return _selectionOption(context, data, route);
+        return _selectionOption();
         break;
       case 'sentence':
-        return _sentenceOption(context, data, route);
+        return _sentenceOption();
         break;
       case 'checkbox':
-        return _checkboxOption(context, data, route);
+        return _checkboxOption();
         break;
       case 'info':
-        return _contentOption(context, data, route);
+        return _contentOption();
         break;
       default:
+        return _error();
         break;
     }
   }
 
-  Widget _checkboxOption(BuildContext context, Map data, String route) {
+  Widget _error() {
     return Container();
   }
 
-  Widget _contentOption(BuildContext context, Map data, String route) {
+  Widget _checkboxOption() {
     return Container();
   }
 
-  Widget _sentenceOption(BuildContext context, Map data, String route) {
+  Widget _contentOption() {
     return Container();
   }
 
-  Widget _selectionOption(BuildContext context, Map data, String route) {
+  Widget _sentenceOption() {
     return Container();
+  }
+
+  Widget _selectionOption() {
+    return Container();
+  }
+
+  Widget _mobileView() {
+    return FractionallySizedBox();
+  }
+
+  Widget _desktopView() {
+    return FractionallySizedBox();
   }
 
   @override
   Widget build(BuildContext context) {
-    return _inputOptions(context, "type", {}, "route");
+    return LayoutBuilder(builder: (context, constraint) {
+      if (constraint.maxWidth < 720) {
+        return _mobileView();
+      } else {
+        return _desktopView();
+      }
+    });
   }
 }

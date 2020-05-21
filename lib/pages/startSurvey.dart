@@ -20,7 +20,6 @@ class _StartSurveyState extends State<StartSurvey> {
 
   @override
   void initState() {
-    surveyCards.add(startCard(context));
     super.initState();
   }
 
@@ -42,10 +41,7 @@ class _StartSurveyState extends State<StartSurvey> {
   }
 
   void initSurvey(BuildContext context) {
-    var data = jsonDecode(widget.data["surveyschema"]);
-    setState(() {
-      surveyCards.add(surveyCard(context, data, "start"));
-    });
+    
   }
 
   void finishSurvey(BuildContext context) {
@@ -264,90 +260,86 @@ class _StartSurveyState extends State<StartSurvey> {
     );
   }
 
-  startCard(BuildContext context) {
-    return FractionallySizedBox(
-      widthFactor: 0.8,
-      heightFactor: 0.8,
-      child: Card(
-        shape: RoundedRectangleBorder(
-            side: new BorderSide(color: Colors.white, width: 2.0),
-            borderRadius: BorderRadius.circular(12.0)),
-        color: Colors.white,
-        child: Stack(
-          children: <Widget>[
-            ListView(
-              padding: EdgeInsets.symmetric(horizontal: 30),
-              children: <Widget>[
-                Align(
-                  alignment: Alignment.center,
-                  child: Padding(
-                    padding: EdgeInsets.only(top: 40),
+  Widget _startCard(double titleSize, double subtitleSize, double textSize, double buttonWidth, double buttonHeight, double buttonPadding) {
+    return Card(
+      shape: RoundedRectangleBorder(
+          side: new BorderSide(color: Colors.white, width: 2.0),
+          borderRadius: BorderRadius.circular(12.0)),
+      color: Colors.white,
+      child: Stack(
+        children: <Widget>[
+          ListView(
+            padding: EdgeInsets.symmetric(horizontal: 30),
+            children: <Widget>[
+              Align(
+                alignment: Alignment.center,
+                child: Padding(
+                  padding: EdgeInsets.only(top: 40),
+                  child: Text(
+                    widget.data["title"],
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontSize: titleSize,
+                      fontWeight: FontWeight.bold,
+                      fontFamily: "BlackChancery",
+                    ),
+                  ),
+                ),
+              ),
+              Align(
+                alignment: Alignment.centerLeft,
+                child: Padding(
+                  padding: EdgeInsets.only(top: 40),
+                  child: Text(
+                    widget.data["descriptiontitle"],
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontSize: subtitleSize,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ),
+              Align(
+                alignment: Alignment.centerLeft,
+                child: Padding(
+                  padding: EdgeInsets.only(top: 40, bottom: 150),
+                  child: Text(
+                    widget.data["description"],
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontSize: textSize,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: Padding(
+              padding: EdgeInsets.only(bottom: buttonPadding),
+              child: RaisedButton(
+                onPressed: () {
+                  initSurvey(context);
+                },
+                child: Container(
+                  width: buttonWidth,
+                  height: buttonHeight,
+                  child: Center(
                     child: Text(
-                      widget.data["title"],
+                      "Start",
                       style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 50,
+                        fontSize: subtitleSize - 2,
                         fontWeight: FontWeight.bold,
-                        fontFamily: "BlackChancery",
-                      ),
-                    ),
-                  ),
-                ),
-                Align(
-                  alignment: Alignment.centerLeft,
-                  child: Padding(
-                    padding: EdgeInsets.only(top: 40),
-                    child: Text(
-                      widget.data["descriptiontitle"],
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 34,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                ),
-                Align(
-                  alignment: Alignment.centerLeft,
-                  child: Padding(
-                    padding: EdgeInsets.only(top: 40, bottom: 150),
-                    child: Text(
-                      widget.data["description"],
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 20,
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            Align(
-              alignment: Alignment.bottomCenter,
-              child: Padding(
-                padding: EdgeInsets.only(bottom: 40),
-                child: RaisedButton(
-                  onPressed: () {
-                    initSurvey(context);
-                  },
-                  child: Container(
-                    width: 180,
-                    height: 75,
-                    child: Center(
-                      child: Text(
-                        "Start",
-                        style: TextStyle(
-                          fontSize: 32,
-                          fontWeight: FontWeight.bold,
-                        ),
                       ),
                     ),
                   ),
                 ),
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
@@ -357,9 +349,21 @@ class _StartSurveyState extends State<StartSurvey> {
     return Scaffold(
       backgroundColor: Colors.black,
       body: Center(
-        child: Stack(
-          children: surveyCards,
-        ),
+        child: LayoutBuilder(builder: (context, constraint) {
+          if (constraint.maxWidth < 720) {
+            return FractionallySizedBox(
+              widthFactor: 0.9,
+              heightFactor: 0.8,
+              child: _startCard(25, 17, 13, 100, 50, 20),
+            );
+          } else {
+            return FractionallySizedBox(
+              widthFactor: 0.8,
+              heightFactor: 0.8,
+              child: _startCard(50, 34, 20, 180, 75, 40),
+            );
+          }
+        }),
       ),
       floatingActionButton: new Stack(
         children: <Widget>[
