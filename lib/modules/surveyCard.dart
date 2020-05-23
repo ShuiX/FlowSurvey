@@ -52,22 +52,32 @@ class _SurveyCardState extends State<SurveyCard> {
     return Container();
   }
 
-  Widget _mobileView() {
-    return FractionallySizedBox();
-  }
-
-  Widget _desktopView() {
-    return FractionallySizedBox();
+  Widget _surveyContent() {
+    return Column(
+      children: [
+        _inputOptions(),
+      ],
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(builder: (context, constraint) {
-      if (constraint.maxWidth < 720) {
-        return _mobileView();
-      } else {
-        return _desktopView();
-      }
-    });
+    return Center(
+      child: LayoutBuilder(builder: (context, constraint) {
+        if (constraint.maxWidth < 720) {
+          return FractionallySizedBox(
+            widthFactor: 0.9,
+            heightFactor: 0.8,
+            child: _surveyContent(),
+          );
+        } else {
+          return FractionallySizedBox(
+            widthFactor: 0.8,
+            heightFactor: 0.8,
+            child: _surveyContent(),
+          );
+        }
+      }),
+    );
   }
 }
