@@ -1,19 +1,18 @@
 import 'package:flutter/material.dart';
 
 class SurveyCard extends StatefulWidget {
-  final Map data;
   final String route;
   final String code;
 
-  SurveyCard({Key key, this.data, this.route, this.code}) : super(key: key);
+  SurveyCard({Key key, this.route, this.code}) : super(key: key);
 
   @override
   _SurveyCardState createState() => _SurveyCardState();
 }
 
 class _SurveyCardState extends State<SurveyCard> {
-  Widget _inputOptions() {
-    switch (widget.data["type"]) {
+  Widget _inputOptions(String type) {
+    switch (type) {
       case 'selection':
         return _selectionOption();
         break;
@@ -55,29 +54,33 @@ class _SurveyCardState extends State<SurveyCard> {
   Widget _surveyContent() {
     return Column(
       children: [
-        _inputOptions(),
+        _inputOptions("Insert"), //TODO: Insert The Snapshottype later
       ],
     );
   }
 
   @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: LayoutBuilder(builder: (context, constraint) {
-        if (constraint.maxWidth < 720) {
-          return FractionallySizedBox(
-            widthFactor: 0.9,
-            heightFactor: 0.8,
-            child: _surveyContent(),
-          );
-        } else {
-          return FractionallySizedBox(
-            widthFactor: 0.8,
-            heightFactor: 0.8,
-            child: _surveyContent(),
-          );
-        }
-      }),
-    );
+  Widget build(BuildContext context) { //Use Streambuilder rather getting from final variables. Multiple Navigator issues can be avoided
+    return StreamBuilder(
+      stream: null, //TODO: insert stream
+      builder: (context, snapshot) {
+      return Center(
+        child: LayoutBuilder(builder: (context, constraint) {
+          if (constraint.maxWidth < 720) {
+            return FractionallySizedBox(
+              widthFactor: 0.9,
+              heightFactor: 0.8,
+              child: _surveyContent(),
+            );
+          } else {
+            return FractionallySizedBox(
+              widthFactor: 0.8,
+              heightFactor: 0.8,
+              child: _surveyContent(),
+            );
+          }
+        }),
+      );
+    });
   }
 }
