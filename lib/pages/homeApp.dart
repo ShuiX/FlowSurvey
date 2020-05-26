@@ -15,29 +15,9 @@ class HomeApp extends StatefulWidget {
 class _HomeAppState extends State<HomeApp> {
   final mySurveyRequestCode = TextEditingController();
 
-  void validateSurveyCode(String requestCode, BuildContext context) {
-    FirebaseApp(requestCode: requestCode).doc.get().then((schemaData) {
-      if (schemaData.exists == true) {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (context) => StartSurvey(
-                    code: requestCode,
-                    data: schemaData.data(),
-                  )),
-        );
-      } else {
-        //This Function or code comes later after the firebase init
-        showDialog(
-          context: context,
-          builder: (BuildContext context) => CustomDialog(
-            title: "FlowSurvey",
-            content: PresetsData.invalidSurveyCode,
-            dialogType: "blueAlert",
-          ),
-        );
-      }
-    });
+  void validateSurveyCode(String requestCode, BuildContext context) async {
+   
+    
   }
 
   @override

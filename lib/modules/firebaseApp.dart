@@ -5,18 +5,16 @@ class FirebaseApp {
   final refSurveys = firestore().collection("suverys");
   final refUsers = firestore().collection("users");
 
-  final String requestCode;
-
-  FirebaseApp({this.requestCode, Auth firebaseAuth})
-      : _firebaseAuth = firebaseAuth ?? auth();
+  FirebaseApp()
+      : _firebaseAuth = auth();
 
   final Auth _firebaseAuth;
 
-  DocumentReference get doc {
-    return refSurveys.doc(requestCode);
+  Future<bool> surveyExist(String requestCode) async {
+    return refSurveys.where("survey", "==", requestCode).onSnapshot.single != null;
   }
 
-  DocumentReference get resultsDoc {
+  DocumentReference resultsDoc(String requestCode) {
     return refSurveys.doc(requestCode).collection("data").doc("results");
   }
 
