@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'dart:convert';
 
 import 'package:va_flutter_project/modules/firebaseApp.dart';
 
@@ -19,24 +18,7 @@ class _EndingSurveyState extends State<EndingSurvey> {
   @override
   void initState() {
     FirebaseApp().surveyExist(widget.code).then((onValue) {
-      var resultData = {};
-      var results = jsonDecode(resultData["data"]);
-      var tempSave = widget.results;
-      for (var item in tempSave) {
-        switch (item["type"]) {
-          case 'selection':
-            ++results[item["route"]][item["value"]];
-            break;
-          case 'sentence':
-            results[item["route"]].add(item["value"]);
-            break;
-          default:
-            break;
-        }
-      }
-      results = jsonEncode(results);
-
-      FirebaseApp(requestCode: widget.code).resultsDoc.set({"data": results});
+      
     });
 
     super.initState();
