@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
-import 'dart:convert';
 import 'package:va_flutter_project/pages/endingSurvey.dart';
 
 class StartSurvey extends StatefulWidget {
   final String code;
-  final Map data;
 
-  StartSurvey({Key key, this.code, this.data}) : super(key: key);
+  StartSurvey({Key key, this.code}) : super(key: key);
 
   @override
   _StartSurveyState createState() => _StartSurveyState();
@@ -40,17 +38,15 @@ class _StartSurveyState extends State<StartSurvey> {
     }
   }
 
-  void initSurvey(BuildContext context) {
-    
-  }
+  void initSurvey(BuildContext context) {}
 
-  void finishSurvey(BuildContext context) {
+  void finishSurvey(BuildContext context, Map data) {
     Navigator.pushNamedAndRemoveUntil(context, '/', (_) => false);
     Navigator.push(
       context,
       MaterialPageRoute(
           builder: (context) => EndingSurvey(
-                endingDescription: widget.data["endingdescription"],
+                endingDescription: data["endingdescription"],
                 results: tempSave,
                 code: widget.code,
               )),
@@ -100,7 +96,7 @@ class _StartSurveyState extends State<StartSurvey> {
           },
         );
         if (_followroute == "finish") {
-          finishSurvey(context);
+          finishSurvey(context, {});
         } else {
           setState(() {
             surveyCards.add(surveyCard(context, data, _followroute));
@@ -155,7 +151,7 @@ class _StartSurveyState extends State<StartSurvey> {
                   child: Padding(
                     padding: EdgeInsets.only(top: 40),
                     child: Text(
-                      widget.data["title"],
+                      data["title"],
                       style: TextStyle(
                         color: Colors.black,
                         fontSize: 50,
@@ -214,7 +210,7 @@ class _StartSurveyState extends State<StartSurvey> {
                         "type": data[route]["type"]
                       });
                       if (_followroute == "finish") {
-                        finishSurvey(context);
+                        finishSurvey(context, {});
                       } else {
                         setState(() {
                           surveyCards
@@ -260,7 +256,8 @@ class _StartSurveyState extends State<StartSurvey> {
     );
   }
 
-  Widget _startCard(double titleSize, double subtitleSize, double textSize, double buttonWidth, double buttonHeight, double buttonPadding) {
+  Widget _startCard(double titleSize, double subtitleSize, double textSize,
+      double buttonWidth, double buttonHeight, double buttonPadding, Map data) {
     return Card(
       shape: RoundedRectangleBorder(
           side: new BorderSide(color: Colors.white, width: 2.0),
@@ -276,7 +273,7 @@ class _StartSurveyState extends State<StartSurvey> {
                 child: Padding(
                   padding: EdgeInsets.only(top: 40),
                   child: Text(
-                    widget.data["title"],
+                    data["title"],
                     style: TextStyle(
                       color: Colors.black,
                       fontSize: titleSize,
@@ -291,7 +288,7 @@ class _StartSurveyState extends State<StartSurvey> {
                 child: Padding(
                   padding: EdgeInsets.only(top: 40),
                   child: Text(
-                    widget.data["descriptiontitle"],
+                    data["descriptiontitle"],
                     style: TextStyle(
                       color: Colors.black,
                       fontSize: subtitleSize,
@@ -305,7 +302,7 @@ class _StartSurveyState extends State<StartSurvey> {
                 child: Padding(
                   padding: EdgeInsets.only(top: 40, bottom: 150),
                   child: Text(
-                    widget.data["description"],
+                    data["description"],
                     style: TextStyle(
                       color: Colors.black,
                       fontSize: textSize,
@@ -348,23 +345,27 @@ class _StartSurveyState extends State<StartSurvey> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.black,
-      body: Center(
-        child: LayoutBuilder(builder: (context, constraint) {
-          if (constraint.maxWidth < 720) {
-            return FractionallySizedBox(
-              widthFactor: 0.9,
-              heightFactor: 0.8,
-              child: _startCard(25, 17, 13, 100, 50, 20),
-            );
-          } else {
-            return FractionallySizedBox(
-              widthFactor: 0.8,
-              heightFactor: 0.8,
-              child: _startCard(50, 34, 20, 180, 75, 40),
-            );
-          }
-        }),
-      ),
+      body: StreamBuilder(
+        stream: null, //TODO: get source in it
+        builder: (context, snapshot) {
+        return Center(
+          child: LayoutBuilder(builder: (context, constraint) {
+            if (constraint.maxWidth < 720) {
+              return FractionallySizedBox(
+                widthFactor: 0.9,
+                heightFactor: 0.8,
+                child: _startCard(25, 17, 13, 100, 50, 20, {}),
+              );
+            } else {
+              return FractionallySizedBox(
+                widthFactor: 0.8,
+                heightFactor: 0.8,
+                child: _startCard(50, 34, 20, 180, 75, 40, {}),
+              );
+            }
+          }),
+        );
+      }),
       floatingActionButton: new Stack(
         children: <Widget>[
           Align(
