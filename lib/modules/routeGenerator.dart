@@ -6,9 +6,9 @@ import 'package:va_flutter_project/pages/accountApp.dart';
 class RouteGenerator {
   static Route<dynamic> generateRoute(RouteSettings settings) {
     //Here getting the arguement pushed by navigator.push
-    final args = settings.arguments;
-
-    switch (settings.name) {
+    final urlData = Uri.parse(settings.name);
+    
+    switch (urlData.path) {
       case '':
         return MaterialPageRoute(builder: (_) => HomeApp());
         break;
@@ -18,14 +18,14 @@ class RouteGenerator {
       case '/create':
         return MaterialPageRoute(
           builder: (_) => CreateAppSwitch(
-            data: args,
+            data: "",
           ),
         );
         break;
       case '/account':
         return MaterialPageRoute(
           builder: (_) => AccountSwitch(
-            data: args,
+            data: "",
           ),
         );
         break;
@@ -33,6 +33,13 @@ class RouteGenerator {
         return MaterialPageRoute(
           builder: (_) => HomeApp(
             code: "va",
+          ),
+        );
+        break;
+      case '/startSurvey':
+        return MaterialPageRoute(
+          builder: (_) => HomeApp(
+            code: urlData.queryParameters["sc"],
           ),
         );
         break;
@@ -69,4 +76,8 @@ class RouteGenerator {
       },
     );
   }
+}
+
+class RouteStringParse {
+
 }

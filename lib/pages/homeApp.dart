@@ -16,8 +16,18 @@ class _HomeAppState extends State<HomeApp> {
   final mySurveyRequestCode = TextEditingController();
 
   void validateSurveyCode(String requestCode, BuildContext context) async {
-   
-    
+    if (await FirebaseApp().surveyExist(requestCode) == false) {
+      
+    } else {
+      showDialog(
+          context: context,
+          builder: (BuildContext context) => CustomDialog(
+            title: "FlowSurvey",
+            content: PresetsData.invalidSurveyCode,
+            dialogType: "blueAlert",
+          ),
+        );
+    }
   }
 
   @override
