@@ -15,8 +15,8 @@ class FirebaseApp {
     });
   }
 
-  DocumentReference resultsDoc(String requestCode) {
-    return refSurveys.doc(requestCode).collection("data").doc("results");
+  Stream<Map> surveyStart(String requestCode) {
+    return refSurveys.doc(requestCode).onSnapshot.map((event) => event.data());
   }
 
   Future<QuerySnapshot> get userData async {

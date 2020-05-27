@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:va_flutter_project/modules/firebaseApp.dart';
 import 'package:va_flutter_project/pages/endingSurvey.dart';
 
 class StartSurvey extends StatefulWidget {
@@ -346,26 +347,40 @@ class _StartSurveyState extends State<StartSurvey> {
     return Scaffold(
       backgroundColor: Colors.black,
       body: StreamBuilder(
-        stream: null, //TODO: get source in it
-        builder: (context, snapshot) {
-        return Center(
-          child: LayoutBuilder(builder: (context, constraint) {
-            if (constraint.maxWidth < 720) {
-              return FractionallySizedBox(
-                widthFactor: 0.9,
-                heightFactor: 0.8,
-                child: _startCard(25, 17, 13, 100, 50, 20, {}),
-              );
-            } else {
-              return FractionallySizedBox(
-                widthFactor: 0.8,
-                heightFactor: 0.8,
-                child: _startCard(50, 34, 20, 180, 75, 40, {}),
-              );
+          stream: FirebaseApp().surveyStart(widget.code),
+          builder: (context, snapshot) {
+            switch (snapshot.connectionState) {
+              case ConnectionState.active:
+                return Center(
+                  child: LayoutBuilder(builder: (context, constraint) {
+                    if (constraint.maxWidth < 720) {
+                      return FractionallySizedBox(
+                        widthFactor: 0.9,
+                        heightFactor: 0.8,
+                        child: _startCard(25, 17, 13, 100, 50, 20, snapshot.data),
+                      );
+                    } else {
+                      return FractionallySizedBox(
+                        widthFactor: 0.8,
+                        heightFactor: 0.8,
+                        child: _startCard(50, 34, 20, 180, 75, 40, snapshot.data),
+                      );
+                    }
+                  }),
+                );
+                break;
+              case ConnectionState.waiting:
+                return Center(
+                  child: Text("Loading"),
+                );
+                break;
+              default:
+                return Center(
+                  child: Text("Error"),
+                );
+                break;
             }
           }),
-        );
-      }),
       floatingActionButton: new Stack(
         children: <Widget>[
           Align(
