@@ -17,16 +17,22 @@ class _HomeAppState extends State<HomeApp> {
 
   void validateSurveyCode(String requestCode, BuildContext context) async {
     if (await FirebaseApp().surveyExist(requestCode) == false) {
-      
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => StartSurvey(
+                  code: requestCode,
+                )),
+      );
     } else {
       showDialog(
-          context: context,
-          builder: (BuildContext context) => CustomDialog(
-            title: "FlowSurvey",
-            content: PresetsData.invalidSurveyCode,
-            dialogType: "blueAlert",
-          ),
-        );
+        context: context,
+        builder: (BuildContext context) => CustomDialog(
+          title: "FlowSurvey",
+          content: PresetsData.invalidSurveyCode,
+          dialogType: "blueAlert",
+        ),
+      );
     }
   }
 
