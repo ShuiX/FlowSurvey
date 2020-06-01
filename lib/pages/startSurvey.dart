@@ -333,15 +333,14 @@ class _StartSurveyState extends State<StartSurvey> {
                   Navigator.push(
                     context,
                     PageRouteBuilder(
-                      pageBuilder: (BuildContext context, _, __) =>
-                          SurveyCard(),
+                      pageBuilder: (BuildContext context, _, __) => SurveyCard(
+                        title: data["title"],
+                      ),
                       opaque: false,
                       transitionsBuilder:
                           (context, animation, secondaryAnimation, child) {
-                        return SlideTransition(
-                          position: animation.drive(
-                              Tween(begin: Offset(0.0, 1.0), end: Offset.zero)
-                                  .chain(CurveTween(curve: Curves.ease))),
+                        return FadeTransition(
+                          opacity: animation,
                           child: child,
                         );
                       },
