@@ -418,7 +418,7 @@ class _SignUpState extends State<SignUp> {
             );
           }).then((value) {
             if (errorcatch == false) {
-              FirebaseApp().refUsers.add(data).then((value) {
+              FirebaseApp().addUserDB(data).then((value) {
                 Navigator.pop(context);
               }).catchError((onError) {
                 showDialog(
