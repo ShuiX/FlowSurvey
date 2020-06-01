@@ -19,6 +19,10 @@ class FirebaseApp {
     return _refSurveys.doc(requestCode).onSnapshot.map((event) => event.data());
   }
 
+  Stream<Map> surveyRouteData(String requestCode, String route) {
+    return _refSurveys.doc(requestCode).collection("survey").doc(route).onSnapshot.map((event) => event.data());
+  }
+
   Future<QuerySnapshot> get userData async {
     return _refUsers.where("email", "==", await getUserEmail()).get();
   }

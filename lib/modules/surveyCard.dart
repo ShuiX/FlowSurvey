@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:va_flutter_project/modules/firebaseApp.dart';
 
 class SurveyCard extends StatefulWidget {
   final String title;
@@ -103,25 +104,40 @@ class _SurveyCardState extends State<SurveyCard> {
   Widget build(BuildContext context) {
     //Use Streambuilder rather getting from final variables. Multiple Navigator issues can be avoided
     return StreamBuilder(
-        stream: null, //TODO: insert stream
+        stream: FirebaseApp()
+            .surveyRouteData(widget.code, widget.route), //TODO: insert stream
         builder: (context, snapshot) {
-          return Center(
-            child: LayoutBuilder(builder: (context, constraint) {
-              if (constraint.maxWidth < 720) {
-                return FractionallySizedBox(
-                  widthFactor: 0.9,
-                  heightFactor: 0.8,
-                  child: _surveyContent({"title": 25}),
-                );
-              } else {
-                return FractionallySizedBox(
-                  widthFactor: 0.8,
-                  heightFactor: 0.8,
-                  child: _surveyContent({"title": 50}),
-                );
-              }
-            }),
-          );
+          switch (snapshot.connectionState) {
+            case ConnectionState.active:
+              return Center(
+                child: LayoutBuilder(builder: (context, constraint) {
+                  if (constraint.maxWidth < 720) {
+                    return FractionallySizedBox(
+                      widthFactor: 0.9,
+                      heightFactor: 0.8,
+                      child: _surveyContent({"title": 25}),
+                    );
+                  } else {
+                    return FractionallySizedBox(
+                      widthFactor: 0.8,
+                      heightFactor: 0.8,
+                      child: _surveyContent({"title": 50}),
+                    );
+                  }
+                }),
+              );
+              break;
+            case ConnectionState.waiting:
+              return Center(
+                child: Text("Loading"),
+              );
+              break;
+            default:
+              return Center(
+                child: Text("Error"),
+              );
+              break;
+          }
         });
   }
 }
