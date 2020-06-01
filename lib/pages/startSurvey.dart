@@ -335,6 +335,8 @@ class _StartSurveyState extends State<StartSurvey> {
                     PageRouteBuilder(
                       pageBuilder: (BuildContext context, _, __) => SurveyCard(
                         title: data["title"],
+                        route: "start",
+                        code: widget.code,
                       ),
                       opaque: false,
                       transitionsBuilder:
