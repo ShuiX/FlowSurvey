@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 
 class SurveyCard extends StatefulWidget {
+  final String title;
   final String route;
   final String code;
   final Map surveyData;
 
-  SurveyCard({Key key, this.route, this.code, this.surveyData})
+  SurveyCard({Key key, this.route, this.code, this.surveyData, this.title})
       : super(key: key);
 
   @override
@@ -53,16 +54,46 @@ class _SurveyCardState extends State<SurveyCard> {
     return Container();
   }
 
-  Widget _surveyContent() {
+  Widget _surveyContent(Map fontData) {
     return Card(
       color: Colors.white,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
+      shape: RoundedRectangleBorder(
+          side: new BorderSide(color: Colors.white, width: 2.0),
+          borderRadius: BorderRadius.circular(12.0)),
+      child: Stack(
         children: [
-          Text("data"),
-          _inputOptions("Insert"), //TODO: Insert The Snapshottype later
-
+          Container(
+            alignment: Alignment.topLeft,
+            padding: EdgeInsets.symmetric(vertical: 20, horizontal: 20),
+            child: IconButton(
+              color: Colors.black,
+              icon: Icon(Icons.arrow_back),
+              iconSize: 40,
+              onPressed: () {
+                Navigator.pop(context);
+              },
+            ),
+          ),
+          Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Container(
+                height: 40,
+                color: Colors.transparent,
+              ),
+              Text(
+                widget.title,
+                style: TextStyle(
+                  color: Colors.black,
+                  fontSize: fontData["title"],
+                  fontWeight: FontWeight.bold,
+                  fontFamily: "BlackChancery",
+                ),
+              ),
+              _inputOptions("Insert"), //TODO: Insert The Snapshottype later
+            ],
+          ),
         ],
       ),
     );
@@ -80,13 +111,13 @@ class _SurveyCardState extends State<SurveyCard> {
                 return FractionallySizedBox(
                   widthFactor: 0.9,
                   heightFactor: 0.8,
-                  child: _surveyContent(),
+                  child: _surveyContent({"title": 25}),
                 );
               } else {
                 return FractionallySizedBox(
                   widthFactor: 0.8,
                   heightFactor: 0.8,
-                  child: _surveyContent(),
+                  child: _surveyContent({"title": 50}),
                 );
               }
             }),
