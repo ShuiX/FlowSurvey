@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:va_flutter_project/modules/firebaseApp.dart';
+import 'package:va_flutter_project/modules/surveyCard.dart';
 import 'package:va_flutter_project/pages/endingSurvey.dart';
 
 class StartSurvey extends StatefulWidget {
@@ -38,8 +39,6 @@ class _StartSurveyState extends State<StartSurvey> {
         break;
     }
   }
-
-  void initSurvey(BuildContext context) {}
 
   void finishSurvey(BuildContext context, Map data) {
     Navigator.pushNamedAndRemoveUntil(context, '/', (_) => false);
@@ -313,13 +312,41 @@ class _StartSurveyState extends State<StartSurvey> {
               ),
             ],
           ),
+          Container(
+            alignment: Alignment.topLeft,
+            padding: EdgeInsets.symmetric(vertical: 20, horizontal: 20),
+            child: IconButton(
+              color: Colors.black,
+              icon: Icon(Icons.arrow_back),
+              iconSize: 40,
+              onPressed: () {
+                Navigator.pop(context);
+              },
+            ),
+          ),
           Align(
             alignment: Alignment.bottomCenter,
             child: Padding(
               padding: EdgeInsets.only(bottom: buttonPadding),
               child: RaisedButton(
                 onPressed: () {
-                  initSurvey(context);
+                  Navigator.push(
+                    context,
+                    PageRouteBuilder(
+                      pageBuilder: (BuildContext context, _, __) =>
+                          SurveyCard(),
+                      opaque: false,
+                      transitionsBuilder:
+                          (context, animation, secondaryAnimation, child) {
+                        return SlideTransition(
+                          position: animation.drive(
+                              Tween(begin: Offset(0.0, 1.0), end: Offset.zero)
+                                  .chain(CurveTween(curve: Curves.ease))),
+                          child: child,
+                        );
+                      },
+                    ),
+                  );
                 },
                 child: Container(
                   width: buttonWidth,
@@ -345,7 +372,7 @@ class _StartSurveyState extends State<StartSurvey> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.black,
+      backgroundColor: Colors.transparent,
       body: StreamBuilder(
           stream: FirebaseApp().surveyStart(widget.code),
           builder: (context, snapshot) {
@@ -357,13 +384,15 @@ class _StartSurveyState extends State<StartSurvey> {
                       return FractionallySizedBox(
                         widthFactor: 0.9,
                         heightFactor: 0.8,
-                        child: _startCard(25, 17, 13, 100, 50, 20, snapshot.data),
+                        child:
+                            _startCard(25, 17, 13, 100, 50, 20, snapshot.data),
                       );
                     } else {
                       return FractionallySizedBox(
                         widthFactor: 0.8,
                         heightFactor: 0.8,
-                        child: _startCard(50, 34, 20, 180, 75, 40, snapshot.data),
+                        child:
+                            _startCard(50, 34, 20, 180, 75, 40, snapshot.data),
                       );
                     }
                   }),
@@ -381,23 +410,6 @@ class _StartSurveyState extends State<StartSurvey> {
                 break;
             }
           }),
-      floatingActionButton: new Stack(
-        children: <Widget>[
-          Align(
-            alignment: Alignment.topLeft,
-            child: Padding(
-              padding: EdgeInsets.only(left: 20, top: 27),
-              child: IconButton(
-                icon: Icon(Icons.arrow_back),
-                iconSize: 50,
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-              ),
-            ),
-          ),
-        ],
-      ),
     );
   }
 }

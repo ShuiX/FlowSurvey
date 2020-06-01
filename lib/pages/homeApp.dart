@@ -19,10 +19,20 @@ class _HomeAppState extends State<HomeApp> {
     if (await FirebaseApp().surveyExist(requestCode) == false) {
       Navigator.push(
         context,
-        MaterialPageRoute(
-            builder: (context) => StartSurvey(
-                  code: requestCode,
-                )),
+        PageRouteBuilder(
+          pageBuilder: (BuildContext context, _, __) => StartSurvey(
+            code: requestCode,
+          ),
+          opaque: false,
+          transitionsBuilder: (context, animation, secondaryAnimation, child) {
+            return SlideTransition(
+              position: animation.drive(
+                  Tween(begin: Offset(0.0, 1.0), end: Offset.zero)
+                      .chain(CurveTween(curve: Curves.ease))),
+              child: child,
+            );
+          },
+        ),
       );
     } else {
       showDialog(
