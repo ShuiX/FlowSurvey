@@ -92,7 +92,7 @@ class _SurveyCardState extends State<SurveyCard> {
                   fontFamily: "BlackChancery",
                 ),
               ),
-              _inputOptions("Insert"), //TODO: Insert The Snapshottype later
+              _inputOptions("Insert Type"),
             ],
           ),
         ],
@@ -102,10 +102,9 @@ class _SurveyCardState extends State<SurveyCard> {
 
   @override
   Widget build(BuildContext context) {
-    //Use Streambuilder rather getting from final variables. Multiple Navigator issues can be avoided
     return StreamBuilder(
         stream: FirebaseApp()
-            .surveyRouteData(widget.code, widget.route), //TODO: insert stream
+            .surveyRouteData(widget.code, widget.route),
         builder: (context, snapshot) {
           switch (snapshot.connectionState) {
             case ConnectionState.active:
