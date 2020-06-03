@@ -8,15 +8,26 @@ class SurveyCard extends StatefulWidget {
   final String code;
   final Map surveyData;
 
-  SurveyCard({Key key, this.route, this.code, this.surveyData, this.title})
-      : super(key: key);
+  SurveyCard(this.route, this.code, this.surveyData, this.title);
 
   @override
   _SurveyCardState createState() => _SurveyCardState();
 }
 
 class _SurveyCardState extends State<SurveyCard> {
-  var textController = TextEditingController();
+  TextEditingController _textController = TextEditingController();
+  String _nextRoute;
+  Map _surveyData;
+
+  @override
+  void initState() {
+    _surveyData = widget.surveyData;
+    print(_surveyData);
+    if (_surveyData["lastRoute"] == null) {
+      _surveyData["lastRoute"] = {};
+    }
+    super.initState();
+  }
 
   Widget _inputOptions(Map fontData, Map data) {
     switch (data["type"]) {
@@ -75,7 +86,26 @@ class _SurveyCardState extends State<SurveyCard> {
               iconSize: fontData["button"],
               onPressed: () {
                 if (widget.route != "start") {
-                  Navigator.pop(context); //TODO: goes back one step from survey
+                  Navigator.pop(context);
+                  Navigator.push(
+                    context,
+                    PageRouteBuilder(
+                      pageBuilder: (BuildContext context, _, __) => SurveyCard(
+                        _surveyData["lastRoute"][widget.route],
+                        widget.code,
+                        _surveyData,
+                        widget.title,
+                      ),
+                      opaque: false,
+                      transitionsBuilder:
+                          (context, animation, secondaryAnimation, child) {
+                        return FadeTransition(
+                          opacity: animation,
+                          child: child,
+                        );
+                      },
+                    ),
+                  );
                 } else {
                   Navigator.pop(
                       context); //TODO: should pop a message that this will destroy the survey and go back to startSurvey
@@ -97,6 +127,42 @@ class _SurveyCardState extends State<SurveyCard> {
                     ),
                   );
                 }
+              },
+            ),
+          ),
+          Container(
+            alignment: Alignment.bottomRight,
+            padding: EdgeInsets.symmetric(vertical: 15, horizontal: 20),
+            child: FloatingActionButton(
+              backgroundColor: Colors.black,
+              heroTag: "nextSurvey",
+              child: Icon(
+                Icons.arrow_forward,
+                size: fontData["button"],
+                color: Colors.white,
+              ),
+              onPressed: () {
+                Navigator.pop(context);
+                _surveyData["lastRoute"][_nextRoute ?? data["routeskip"]] = widget.route;
+                Navigator.push(
+                  context,
+                  PageRouteBuilder(
+                    pageBuilder: (BuildContext context, _, __) => SurveyCard(
+                      _nextRoute ?? data["routeskip"],
+                      widget.code,
+                      _surveyData,
+                      widget.title,
+                    ),
+                    opaque: false,
+                    transitionsBuilder:
+                        (context, animation, secondaryAnimation, child) {
+                      return FadeTransition(
+                        opacity: animation,
+                        child: child,
+                      );
+                    },
+                  ),
+                );
               },
             ),
           ),
