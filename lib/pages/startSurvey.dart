@@ -5,8 +5,11 @@ import 'package:va_flutter_project/pages/endingSurvey.dart';
 
 class StartSurvey extends StatefulWidget {
   final String code;
+  final Map surveyData;
 
-  StartSurvey({Key key, this.code}) : super(key: key);
+  StartSurvey({this.code, this.surveyData}) : _surveyData = surveyData ?? {};
+
+  final Map _surveyData;
 
   @override
   _StartSurveyState createState() => _StartSurveyState();
@@ -20,6 +23,9 @@ class _StartSurveyState extends State<StartSurvey> {
 
   @override
   void initState() {
+    if (widget.code == null) {
+      Navigator.pop(context);
+    }
     super.initState();
   }
 
@@ -330,6 +336,7 @@ class _StartSurveyState extends State<StartSurvey> {
               padding: EdgeInsets.only(bottom: buttonPadding),
               child: RaisedButton(
                 onPressed: () {
+                  Navigator.pop(context);
                   Navigator.push(
                     context,
                     PageRouteBuilder(
@@ -337,6 +344,7 @@ class _StartSurveyState extends State<StartSurvey> {
                         title: data["title"],
                         route: "start",
                         code: widget.code,
+                        surveyData: widget._surveyData,
                       ),
                       opaque: false,
                       transitionsBuilder:

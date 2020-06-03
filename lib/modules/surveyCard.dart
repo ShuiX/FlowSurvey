@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:va_flutter_project/modules/firebaseApp.dart';
+import 'package:va_flutter_project/pages/startSurvey.dart';
 
 class SurveyCard extends StatefulWidget {
   final String title;
@@ -15,19 +16,21 @@ class SurveyCard extends StatefulWidget {
 }
 
 class _SurveyCardState extends State<SurveyCard> {
-  Widget _inputOptions(String type) {
-    switch (type) {
+  var textController = TextEditingController();
+
+  Widget _inputOptions(Map fontData, Map data) {
+    switch (data["type"]) {
       case 'selection':
-        return _selectionOption();
+        return _selectionOption(fontData, data);
         break;
       case 'sentence':
-        return _sentenceOption();
+        return _sentenceOption(fontData, data);
         break;
       case 'checkbox':
-        return _checkboxOption();
+        return _checkboxOption(fontData, data);
         break;
       case 'info':
-        return _contentOption();
+        return _contentOption(fontData, data);
         break;
       default:
         return _error();
@@ -39,23 +42,23 @@ class _SurveyCardState extends State<SurveyCard> {
     return Container();
   }
 
-  Widget _checkboxOption() {
+  Widget _checkboxOption(Map fontData, Map data) {
     return Container();
   }
 
-  Widget _contentOption() {
+  Widget _contentOption(Map fontData, Map data) {
     return Container();
   }
 
-  Widget _sentenceOption() {
+  Widget _sentenceOption(Map fontData, Map data) {
     return Container();
   }
 
-  Widget _selectionOption() {
+  Widget _selectionOption(Map fontData, Map data) {
     return Container();
   }
 
-  Widget _surveyContent(Map fontData) {
+  Widget _surveyContent(Map fontData, Map data) {
     return Card(
       color: Colors.white,
       shape: RoundedRectangleBorder(
@@ -69,9 +72,31 @@ class _SurveyCardState extends State<SurveyCard> {
             child: IconButton(
               color: Colors.black,
               icon: Icon(Icons.arrow_back),
-              iconSize: 40,
+              iconSize: fontData["button"],
               onPressed: () {
-                Navigator.pop(context);
+                if (widget.route != "start") {
+                  Navigator.pop(context); //TODO: goes back one step from survey
+                } else {
+                  Navigator.pop(
+                      context); //TODO: should pop a message that this will destroy the survey and go back to startSurvey
+                  Navigator.push(
+                    context,
+                    PageRouteBuilder(
+                      pageBuilder: (BuildContext context, _, __) => StartSurvey(
+                        code: widget.code,
+                        surveyData: widget.surveyData,
+                      ),
+                      opaque: false,
+                      transitionsBuilder:
+                          (context, animation, secondaryAnimation, child) {
+                        return FadeTransition(
+                          opacity: animation,
+                          child: child,
+                        );
+                      },
+                    ),
+                  );
+                }
               },
             ),
           ),
@@ -92,7 +117,19 @@ class _SurveyCardState extends State<SurveyCard> {
                   fontFamily: "BlackChancery",
                 ),
               ),
-              _inputOptions("Insert Type"),
+              Container(
+                height: 40,
+                color: Colors.transparent,
+              ),
+              Text(
+                data["request"],
+                style: TextStyle(
+                  color: Colors.black,
+                  fontSize: fontData["subTitle"],
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              _inputOptions(fontData, data),
             ],
           ),
         ],
@@ -103,8 +140,7 @@ class _SurveyCardState extends State<SurveyCard> {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder(
-        stream: FirebaseApp()
-            .surveyRouteData(widget.code, widget.route),
+        stream: FirebaseApp().surveyRouteData(widget.code, widget.route),
         builder: (context, snapshot) {
           switch (snapshot.connectionState) {
             case ConnectionState.active:
@@ -114,13 +150,23 @@ class _SurveyCardState extends State<SurveyCard> {
                     return FractionallySizedBox(
                       widthFactor: 0.9,
                       heightFactor: 0.8,
-                      child: _surveyContent({"title": 25}),
+                      child: _surveyContent({
+                        "title": 25,
+                        "subTitle": 17,
+                        "text": 13,
+                        "button": 20
+                      }, snapshot.data),
                     );
                   } else {
                     return FractionallySizedBox(
                       widthFactor: 0.8,
                       heightFactor: 0.8,
-                      child: _surveyContent({"title": 50}),
+                      child: _surveyContent({
+                        "title": 50,
+                        "subTitle": 34,
+                        "text": 20,
+                        "button": 40
+                      }, snapshot.data),
                     );
                   }
                 }),
