@@ -7,9 +7,8 @@ class StartSurvey extends StatefulWidget {
   final String code;
   final Map surveyData;
 
-  StartSurvey({this.code, this.surveyData}) : _surveyData = surveyData ?? {};
+  StartSurvey({this.code, this.surveyData});
 
-  final Map _surveyData;
 
   @override
   _StartSurveyState createState() => _StartSurveyState();
@@ -104,9 +103,7 @@ class _StartSurveyState extends State<StartSurvey> {
         if (_followroute == "finish") {
           finishSurvey(context, {});
         } else {
-          setState(() {
-            surveyCards.add(surveyCard(context, data, _followroute));
-          });
+          setState(() {});
         }
       },
     ));
@@ -129,137 +126,12 @@ class _StartSurveyState extends State<StartSurvey> {
               _currentOptionValue = value;
               _followroute = item["followroute"];
               surveyCards.removeLast();
-              surveyCards.add(surveyCard(context, data, route));
             });
           },
         ));
       });
     }
     return optionList;
-  }
-
-  surveyCard(BuildContext context, Map data, String route) {
-    return FractionallySizedBox(
-      widthFactor: 0.8,
-      heightFactor: 0.8,
-      child: Card(
-        shape: RoundedRectangleBorder(
-            side: new BorderSide(color: Colors.white, width: 2.0),
-            borderRadius: BorderRadius.circular(12.0)),
-        color: Colors.white,
-        child: Stack(
-          children: <Widget>[
-            ListView(
-              padding: EdgeInsets.symmetric(horizontal: 30),
-              children: <Widget>[
-                Align(
-                  alignment: Alignment.center,
-                  child: Padding(
-                    padding: EdgeInsets.only(top: 40),
-                    child: Text(
-                      data["title"],
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 50,
-                        fontWeight: FontWeight.bold,
-                        fontFamily: "BlackChancery",
-                      ),
-                    ),
-                  ),
-                ),
-                Align(
-                  alignment: Alignment.centerLeft,
-                  child: Padding(
-                    padding: EdgeInsets.only(top: 40),
-                    child: Text(
-                      data[route]["request"],
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 34,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                ),
-                Align(
-                  alignment: Alignment.center,
-                  child: Padding(
-                    padding: EdgeInsets.only(top: 40),
-                    child: Column(
-                      children: inputOptions(
-                          context, data[route]["type"], data, route),
-                    ),
-                  ),
-                )
-              ],
-            ),
-            Align(
-              alignment: Alignment.bottomRight,
-              child: Padding(
-                padding: EdgeInsets.only(bottom: 20, right: 20),
-                child: FloatingActionButton(
-                  child: Icon(
-                    Icons.arrow_forward,
-                  ),
-                  tooltip: 'Next',
-                  onPressed: () {
-                    if (data[route]["type"] == "info") {
-                      setState(() {
-                        _followroute = data[route]["routeskip"];
-                      });
-                    }
-                    if (_currentOptionValue != null || _followroute != null) {
-                      tempSave.add({
-                        "value": _currentOptionValue,
-                        "followroute": _followroute,
-                        "route": route,
-                        "type": data[route]["type"]
-                      });
-                      if (_followroute == "finish") {
-                        finishSurvey(context, {});
-                      } else {
-                        setState(() {
-                          surveyCards
-                              .add(surveyCard(context, data, _followroute));
-                          _currentOptionValue = null;
-                          _followroute = null;
-                        });
-                      }
-                    } else {
-                      return null;
-                    }
-                  },
-                ),
-              ),
-            ),
-            Align(
-              alignment: Alignment.topLeft,
-              child: Padding(
-                padding: EdgeInsets.only(top: 9, left: 11),
-                child: IconButton(
-                  color: Colors.black,
-                  iconSize: 32,
-                  icon: Icon(Icons.arrow_back),
-                  tooltip: 'go back',
-                  onPressed: () {
-                    setState(() {
-                      surveyCards.removeLast();
-                      if (tempSave.length != 0) {
-                        _followroute =
-                            tempSave[tempSave.length - 1]["followroute"];
-                        _currentOptionValue =
-                            tempSave[tempSave.length - 1]["value"];
-                        tempSave.removeLast();
-                      }
-                    });
-                  },
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
   }
 
   Widget _startCard(double titleSize, double subtitleSize, double textSize,
@@ -341,10 +213,10 @@ class _StartSurveyState extends State<StartSurvey> {
                     context,
                     PageRouteBuilder(
                       pageBuilder: (BuildContext context, _, __) => SurveyCard(
-                        title: data["title"],
-                        route: "start",
-                        code: widget.code,
-                        surveyData: widget._surveyData,
+                        "start",
+                        widget.code,
+                        widget.surveyData ?? {},
+                        data["title"],
                       ),
                       opaque: false,
                       transitionsBuilder:
