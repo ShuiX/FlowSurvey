@@ -22,7 +22,6 @@ class _SurveyCardState extends State<SurveyCard> {
   @override
   void initState() {
     _surveyData = widget.surveyData;
-    print(_surveyData);
     if (_surveyData["lastRoute"] == null) {
       _surveyData["lastRoute"] = {};
     }
