@@ -25,6 +25,9 @@ class _SurveyCardState extends State<SurveyCard> {
     if (_surveyData["lastRoute"] == null) {
       _surveyData["lastRoute"] = {};
     }
+    if (_surveyData["history"] == null) {
+      _surveyData["history"] = {};
+    }
     super.initState();
   }
 
@@ -106,8 +109,7 @@ class _SurveyCardState extends State<SurveyCard> {
                     ),
                   );
                 } else {
-                  Navigator.pop(
-                      context); //TODO: should pop a message that this will destroy the survey and go back to startSurvey
+                  Navigator.pop(context);
                   Navigator.push(
                     context,
                     PageRouteBuilder(
@@ -142,7 +144,10 @@ class _SurveyCardState extends State<SurveyCard> {
               ),
               onPressed: () {
                 Navigator.pop(context);
-                _surveyData["lastRoute"][_nextRoute ?? data["routeskip"]] = widget.route;
+                _surveyData["lastRoute"][_nextRoute ?? data["routeskip"]] =
+                    widget.route;
+                _surveyData["history"][widget.route]["type"] = _textController
+                    .text; //TODO: Adding Method to add temporary Values depending on type of survey
                 Navigator.push(
                   context,
                   PageRouteBuilder(
