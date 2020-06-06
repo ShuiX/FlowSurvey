@@ -17,6 +17,7 @@ class SurveyCard extends StatefulWidget {
 class _SurveyCardState extends State<SurveyCard> {
   TextEditingController _textController = TextEditingController();
   String _nextRoute;
+  var _temp;
   Map _surveyData;
 
   @override
@@ -33,8 +34,8 @@ class _SurveyCardState extends State<SurveyCard> {
 
   Widget _inputOptions(Map fontData, Map data) {
     switch (data["type"]) {
-      case 'selection':
-        return _selectionOption(fontData, data);
+      case 'radio':
+        return _radioOption(fontData, data);
         break;
       case 'sentence':
         return _sentenceOption(fontData, data);
@@ -67,8 +68,23 @@ class _SurveyCardState extends State<SurveyCard> {
     return Container();
   }
 
-  Widget _selectionOption(Map fontData, Map data) {
-    return Container();
+  Widget _radioOption(Map fontData, Map data) {
+    return Column(
+      children: [
+        ListTile(
+          title: const Text('Lafayette'),
+          leading: Radio(
+            value: null,
+            groupValue: _temp,
+            onChanged: (value) {
+              setState(() {
+                _temp = value;
+              });
+            },
+          ),
+        ),
+      ],
+    );
   }
 
   Widget _surveyContent(Map fontData, Map data) {
@@ -171,35 +187,37 @@ class _SurveyCardState extends State<SurveyCard> {
             ),
           ),
           Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Container(
-                height: 40,
-                color: Colors.transparent,
-              ),
-              Text(
-                widget.title,
-                style: TextStyle(
-                  color: Colors.black,
-                  fontSize: fontData["title"],
-                  fontWeight: FontWeight.bold,
-                  fontFamily: "BlackChancery",
+                padding: EdgeInsets.only(top: 40),
+                alignment: Alignment.center,
+                child: Text(
+                  widget.title,
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontSize: fontData["title"],
+                    fontWeight: FontWeight.bold,
+                    fontFamily: "BlackChancery",
+                  ),
                 ),
               ),
               Container(
-                height: 40,
-                color: Colors.transparent,
-              ),
-              Text(
-                data["request"],
-                style: TextStyle(
-                  color: Colors.black,
-                  fontSize: fontData["subTitle"],
-                  fontWeight: FontWeight.bold,
+                padding: EdgeInsets.only(top: 40, left: 30),
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  data["request"],
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontSize: fontData["subTitle"],
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
-              _inputOptions(fontData, data),
+              Container(
+                alignment: Alignment.centerLeft,
+                padding: EdgeInsets.only(left: 40, top: 20),
+                child: _inputOptions(fontData, data),
+              ),
             ],
           ),
         ],
