@@ -24,11 +24,8 @@ class _SurveyCardState extends State<SurveyCard> {
   @override
   void initState() {
     _surveyData = widget.surveyData;
-    if (_surveyData["lastRoute"] == null) {
-      _surveyData["lastRoute"] = {};
-    }
-    if (_surveyData["history"] == null) {
-      _surveyData["history"] = {};
+    if (_surveyData["history"][widget.route] != null) {
+      _temp = _surveyData["history"][widget.route]["value"];
     }
     super.initState();
   }
@@ -83,6 +80,7 @@ class _SurveyCardState extends State<SurveyCard> {
               groupValue: _temp,
               onChanged: (value) {
                 setState(() {
+                  _nextRoute = item["followroute"];
                   _temp = value;
                 });
               },
@@ -159,6 +157,8 @@ class _SurveyCardState extends State<SurveyCard> {
               Navigator.pop(context);
               _surveyData["lastRoute"][_nextRoute ?? data["routeskip"]] =
                   widget.route;
+              _surveyData["history"]
+                  [widget.route] = {"value": _temp, "type": data["type"]};
               //TODO: Adding Method to add temporary Values depending on type of survey
               Navigator.push(
                 context,
@@ -259,7 +259,8 @@ class _SurveyCardState extends State<SurveyCard> {
     return StreamBuilder(
         stream: FirebaseApp().surveyRouteData(widget.code, widget.route),
         builder: (context, snapshot) {
-          if (!_connectionConfirm) { //Just need to confirm once and maybe later Connectionstate feature will be in full use later
+          if (!_connectionConfirm) {
+            //Just need to confirm once and maybe later Connectionstate feature will be in full use later
             switch (snapshot.connectionState) {
               case ConnectionState.active:
                 _connectionConfirm = true;
