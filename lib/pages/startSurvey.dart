@@ -140,7 +140,7 @@ class _StartSurveyState extends State<StartSurvey> {
       shape: RoundedRectangleBorder(
           side: new BorderSide(color: Colors.white, width: 2.0),
           borderRadius: BorderRadius.circular(12.0)),
-      color: Colors.white,
+      color: Colors.black,
       child: Stack(
         children: <Widget>[
           ListView(
@@ -153,7 +153,6 @@ class _StartSurveyState extends State<StartSurvey> {
                   child: Text(
                     data["title"],
                     style: TextStyle(
-                      color: Colors.black,
                       fontSize: titleSize,
                       fontWeight: FontWeight.bold,
                       fontFamily: "BlackChancery",
@@ -168,7 +167,6 @@ class _StartSurveyState extends State<StartSurvey> {
                   child: Text(
                     data["descriptiontitle"],
                     style: TextStyle(
-                      color: Colors.black,
                       fontSize: subtitleSize,
                       fontWeight: FontWeight.bold,
                     ),
@@ -182,7 +180,6 @@ class _StartSurveyState extends State<StartSurvey> {
                   child: Text(
                     data["description"],
                     style: TextStyle(
-                      color: Colors.black,
                       fontSize: textSize,
                     ),
                   ),
@@ -194,7 +191,6 @@ class _StartSurveyState extends State<StartSurvey> {
             alignment: Alignment.topLeft,
             padding: EdgeInsets.symmetric(vertical: 20, horizontal: 20),
             child: IconButton(
-              color: Colors.black,
               icon: Icon(Icons.arrow_back),
               iconSize: 40,
               onPressed: () {
@@ -207,6 +203,7 @@ class _StartSurveyState extends State<StartSurvey> {
             child: Padding(
               padding: EdgeInsets.only(bottom: buttonPadding),
               child: RaisedButton(
+                color: Colors.white,
                 onPressed: () {
                   Navigator.pop(context);
                   Navigator.push(
@@ -236,6 +233,7 @@ class _StartSurveyState extends State<StartSurvey> {
                     child: Text(
                       "Start",
                       style: TextStyle(
+                        color: Colors.black,
                         fontSize: subtitleSize - 2,
                         fontWeight: FontWeight.bold,
                       ),
