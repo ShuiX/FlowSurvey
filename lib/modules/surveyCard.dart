@@ -19,6 +19,7 @@ class _SurveyCardState extends State<SurveyCard> {
   String _nextRoute;
   var _temp;
   Map _surveyData;
+  bool _connectionConfirm = false;
 
   @override
   void initState() {
@@ -71,104 +72,43 @@ class _SurveyCardState extends State<SurveyCard> {
   Widget _radioOption(Map fontData, Map data) {
     return Column(
       children: [
-        ListTile(
-          title: const Text('Lafayette'),
-          leading: Radio(
-            value: null,
-            groupValue: _temp,
-            onChanged: (value) {
-              setState(() {
-                _temp = value;
-              });
-            },
+        for (var item in data["reply"])
+          ListTile(
+            title: Text(
+              item["radio"],
+              style: TextStyle(fontSize: fontData["text"]),
+            ),
+            leading: Radio(
+              value: item["radio"],
+              groupValue: _temp,
+              onChanged: (value) {
+                setState(() {
+                  _temp = value;
+                });
+              },
+            ),
           ),
-        ),
       ],
     );
   }
 
   Widget _surveyContent(Map fontData, Map data) {
-    return Card(
-      color: Colors.white,
-      shape: RoundedRectangleBorder(
-          side: new BorderSide(color: Colors.white, width: 2.0),
-          borderRadius: BorderRadius.circular(12.0)),
-      child: Stack(
-        children: [
-          Container(
-            alignment: Alignment.topLeft,
-            padding: EdgeInsets.symmetric(vertical: 20, horizontal: 20),
-            child: IconButton(
-              color: Colors.black,
-              icon: Icon(Icons.arrow_back),
-              iconSize: fontData["button"],
-              onPressed: () {
-                if (widget.route != "start") {
-                  Navigator.pop(context);
-                  Navigator.push(
-                    context,
-                    PageRouteBuilder(
-                      pageBuilder: (BuildContext context, _, __) => SurveyCard(
-                        _surveyData["lastRoute"][widget.route],
-                        widget.code,
-                        _surveyData,
-                        widget.title,
-                      ),
-                      opaque: false,
-                      transitionsBuilder:
-                          (context, animation, secondaryAnimation, child) {
-                        return FadeTransition(
-                          opacity: animation,
-                          child: child,
-                        );
-                      },
-                    ),
-                  );
-                } else {
-                  Navigator.pop(context);
-                  Navigator.push(
-                    context,
-                    PageRouteBuilder(
-                      pageBuilder: (BuildContext context, _, __) => StartSurvey(
-                        code: widget.code,
-                        surveyData: widget.surveyData,
-                      ),
-                      opaque: false,
-                      transitionsBuilder:
-                          (context, animation, secondaryAnimation, child) {
-                        return FadeTransition(
-                          opacity: animation,
-                          child: child,
-                        );
-                      },
-                    ),
-                  );
-                }
-              },
-            ),
-          ),
-          Container(
-            alignment: Alignment.bottomRight,
-            padding: EdgeInsets.symmetric(vertical: 15, horizontal: 20),
-            child: FloatingActionButton(
-              backgroundColor: Colors.black,
-              heroTag: "nextSurvey",
-              child: Icon(
-                Icons.arrow_forward,
-                size: fontData["button"],
-                color: Colors.white,
-              ),
-              onPressed: () {
+    return Stack(
+      children: [
+        Container(
+          alignment: Alignment.topLeft,
+          padding: EdgeInsets.symmetric(vertical: 20, horizontal: 20),
+          child: IconButton(
+            icon: Icon(Icons.arrow_back),
+            iconSize: fontData["button"],
+            onPressed: () {
+              if (widget.route != "start") {
                 Navigator.pop(context);
-                _surveyData["lastRoute"][_nextRoute ?? data["routeskip"]] =
-                    widget.route;
-                _surveyData["history"][widget.route]["type"] = _textController
-                    .text; //TODO: Adding Method to add temporary Values depending on type of survey
                 Navigator.push(
                   context,
                   PageRouteBuilder(
                     pageBuilder: (BuildContext context, _, __) => SurveyCard(
-                      _nextRoute ?? data["routeskip"],
+                      _surveyData["lastRoute"][widget.route],
                       widget.code,
                       _surveyData,
                       widget.title,
@@ -183,45 +123,134 @@ class _SurveyCardState extends State<SurveyCard> {
                     },
                   ),
                 );
-              },
+              } else {
+                Navigator.pop(context);
+                Navigator.push(
+                  context,
+                  PageRouteBuilder(
+                    pageBuilder: (BuildContext context, _, __) => StartSurvey(
+                      code: widget.code,
+                      surveyData: widget.surveyData,
+                    ),
+                    opaque: false,
+                    transitionsBuilder:
+                        (context, animation, secondaryAnimation, child) {
+                      return FadeTransition(
+                        opacity: animation,
+                        child: child,
+                      );
+                    },
+                  ),
+                );
+              }
+            },
+          ),
+        ),
+        Container(
+          alignment: Alignment.bottomRight,
+          padding: EdgeInsets.symmetric(vertical: 15, horizontal: 20),
+          child: FloatingActionButton(
+            heroTag: "nextSurvey",
+            child: Icon(
+              Icons.arrow_forward,
+              size: fontData["button"],
             ),
-          ),
-          Column(
-            children: [
-              Container(
-                padding: EdgeInsets.only(top: 40),
-                alignment: Alignment.center,
-                child: Text(
-                  widget.title,
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontSize: fontData["title"],
-                    fontWeight: FontWeight.bold,
-                    fontFamily: "BlackChancery",
+            onPressed: () {
+              Navigator.pop(context);
+              _surveyData["lastRoute"][_nextRoute ?? data["routeskip"]] =
+                  widget.route;
+              //TODO: Adding Method to add temporary Values depending on type of survey
+              Navigator.push(
+                context,
+                PageRouteBuilder(
+                  pageBuilder: (BuildContext context, _, __) => SurveyCard(
+                    _nextRoute ?? data["routeskip"],
+                    widget.code,
+                    _surveyData,
+                    widget.title,
                   ),
+                  opaque: false,
+                  transitionsBuilder:
+                      (context, animation, secondaryAnimation, child) {
+                    return FadeTransition(
+                      opacity: animation,
+                      child: child,
+                    );
+                  },
+                ),
+              );
+            },
+          ),
+        ),
+        Column(
+          children: [
+            Container(
+              padding: EdgeInsets.only(top: 40),
+              alignment: Alignment.center,
+              child: Text(
+                widget.title,
+                style: TextStyle(
+                  fontSize: fontData["title"],
+                  fontWeight: FontWeight.bold,
+                  fontFamily: "BlackChancery",
                 ),
               ),
-              Container(
-                padding: EdgeInsets.only(top: 40, left: 30),
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  data["request"],
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontSize: fontData["subTitle"],
-                    fontWeight: FontWeight.bold,
-                  ),
+            ),
+            Container(
+              padding: EdgeInsets.only(top: 40, left: 30),
+              alignment: Alignment.centerLeft,
+              child: Text(
+                data["request"],
+                style: TextStyle(
+                  fontSize: fontData["subTitle"],
+                  fontWeight: FontWeight.bold,
                 ),
               ),
-              Container(
-                alignment: Alignment.centerLeft,
-                padding: EdgeInsets.only(left: 40, top: 20),
-                child: _inputOptions(fontData, data),
-              ),
-            ],
-          ),
-        ],
-      ),
+            ),
+            Container(
+              alignment: Alignment.centerLeft,
+              padding: EdgeInsets.only(left: 40, top: 20),
+              child: _inputOptions(fontData, data),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+
+  Widget _mainCard(Map data) {
+    return Center(
+      child: LayoutBuilder(builder: (context, constraint) {
+        if (constraint.maxWidth < 720) {
+          return FractionallySizedBox(
+            widthFactor: 0.9,
+            heightFactor: 0.8,
+            child: Card(
+              color: Colors.black,
+              shape: RoundedRectangleBorder(
+                  side: new BorderSide(color: Colors.white, width: 2.0),
+                  borderRadius: BorderRadius.circular(12.0)),
+              child: _surveyContent(
+                  {"title": 25, "subTitle": 17, "text": 13, "button": 20},
+                  data),
+            ),
+          );
+        } else {
+          return FractionallySizedBox(
+            widthFactor: 0.8,
+            heightFactor: 0.8,
+            child: Card(
+              color: Colors.black,
+              shape: RoundedRectangleBorder(
+                  side: new BorderSide(color: Colors.white, width: 2.0),
+                  borderRadius: BorderRadius.circular(12.0)),
+              child: _surveyContent(
+                  {"title": 50, "subTitle": 34, "text": 20, "button": 40},
+                  data),
+            ),
+          );
+        }
+      }),
     );
   }
 
@@ -230,46 +259,25 @@ class _SurveyCardState extends State<SurveyCard> {
     return StreamBuilder(
         stream: FirebaseApp().surveyRouteData(widget.code, widget.route),
         builder: (context, snapshot) {
-          switch (snapshot.connectionState) {
-            case ConnectionState.active:
-              return Center(
-                child: LayoutBuilder(builder: (context, constraint) {
-                  if (constraint.maxWidth < 720) {
-                    return FractionallySizedBox(
-                      widthFactor: 0.9,
-                      heightFactor: 0.8,
-                      child: _surveyContent({
-                        "title": 25,
-                        "subTitle": 17,
-                        "text": 13,
-                        "button": 20
-                      }, snapshot.data),
-                    );
-                  } else {
-                    return FractionallySizedBox(
-                      widthFactor: 0.8,
-                      heightFactor: 0.8,
-                      child: _surveyContent({
-                        "title": 50,
-                        "subTitle": 34,
-                        "text": 20,
-                        "button": 40
-                      }, snapshot.data),
-                    );
-                  }
-                }),
-              );
-              break;
-            case ConnectionState.waiting:
-              return Center(
-                child: Text("Loading"),
-              );
-              break;
-            default:
-              return Center(
-                child: Text("Error"),
-              );
-              break;
+          if (!_connectionConfirm) { //Just need to confirm once and maybe later Connectionstate feature will be in full use later
+            switch (snapshot.connectionState) {
+              case ConnectionState.active:
+                _connectionConfirm = true;
+                return _mainCard(snapshot.data);
+                break;
+              case ConnectionState.waiting:
+                return Center(
+                  child: Text("Loading"),
+                );
+                break;
+              default:
+                return Center(
+                  child: Text("Error"),
+                );
+                break;
+            }
+          } else {
+            return _mainCard(snapshot.data);
           }
         });
   }
