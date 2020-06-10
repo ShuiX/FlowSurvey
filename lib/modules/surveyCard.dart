@@ -30,6 +30,24 @@ class _SurveyCardState extends State<SurveyCard> {
     super.initState();
   }
 
+  Widget _loading() {
+    return LayoutBuilder(builder: (context, constraints) {
+      if (constraints.maxWidth < 720) {
+        return FractionallySizedBox(
+          widthFactor: 9,
+          heightFactor: 8,
+          child: Text("Loading"),
+        );
+      } else {
+        return FractionallySizedBox(
+          widthFactor: 8,
+          heightFactor: 8,
+          child: Text("Loading"),
+        );
+      }
+    });
+  }
+
   Widget _inputOptions(Map fontData, Map data) {
     switch (data["type"]) {
       case 'radio':
@@ -44,16 +62,11 @@ class _SurveyCardState extends State<SurveyCard> {
       case 'info':
         return _contentOption(fontData, data);
         break;
-      case 'finish':
-        return _finishDialog(fontData, data);
-        break;
       default:
         return _error();
         break;
     }
   }
-
-  Widget _finishDialog(Map fontData, Map data) {}
 
   Widget _error() {
     return Container(
@@ -155,46 +168,53 @@ class _SurveyCardState extends State<SurveyCard> {
             icon: Icon(Icons.arrow_back),
             iconSize: fontData["button"],
             onPressed: () {
-              if (widget.route != "start") {
-                Navigator.pop(context);
-                Navigator.push(
-                  context,
-                  PageRouteBuilder(
-                    pageBuilder: (BuildContext context, _, __) => SurveyCard(
-                      _surveyData["lastRoute"][widget.route],
-                      widget.code,
-                      _surveyData,
-                      widget.title,
+              switch (widget.route) {
+                case "start":
+                  Navigator.pop(context);
+                  Navigator.push(
+                    context,
+                    PageRouteBuilder(
+                      pageBuilder: (BuildContext context, _, __) => StartSurvey(
+                        code: widget.code,
+                        surveyData: widget.surveyData,
+                      ),
+                      opaque: false,
+                      transitionsBuilder:
+                          (context, animation, secondaryAnimation, child) {
+                        return SlideTransition(
+                          position: animation.drive(
+                              Tween(begin: Offset(0.0, 1.0), end: Offset.zero)
+                                  .chain(CurveTween(curve: Curves.ease))),
+                          child: child,
+                        );
+                      },
                     ),
-                    opaque: false,
-                    transitionsBuilder:
-                        (context, animation, secondaryAnimation, child) {
-                      return FadeTransition(
-                        opacity: animation,
-                        child: child,
-                      );
-                    },
-                  ),
-                );
-              } else {
-                Navigator.pop(context);
-                Navigator.push(
-                  context,
-                  PageRouteBuilder(
-                    pageBuilder: (BuildContext context, _, __) => StartSurvey(
-                      code: widget.code,
-                      surveyData: widget.surveyData,
+                  );
+                  break;
+                default:
+                  Navigator.pop(context);
+                  Navigator.push(
+                    context,
+                    PageRouteBuilder(
+                      pageBuilder: (BuildContext context, _, __) => SurveyCard(
+                        _surveyData["lastRoute"][widget.route],
+                        widget.code,
+                        _surveyData,
+                        widget.title,
+                      ),
+                      opaque: false,
+                      transitionsBuilder:
+                          (context, animation, secondaryAnimation, child) {
+                        return SlideTransition(
+                          position: animation.drive(
+                              Tween(begin: Offset(0.0, 1.0), end: Offset.zero)
+                                  .chain(CurveTween(curve: Curves.ease))),
+                          child: child,
+                        );
+                      },
                     ),
-                    opaque: false,
-                    transitionsBuilder:
-                        (context, animation, secondaryAnimation, child) {
-                      return FadeTransition(
-                        opacity: animation,
-                        child: child,
-                      );
-                    },
-                  ),
-                );
+                  );
+                  break;
               }
             },
           ),
@@ -209,31 +229,40 @@ class _SurveyCardState extends State<SurveyCard> {
               size: fontData["button"],
             ),
             onPressed: () {
-              Navigator.pop(context);
-              _surveyData["lastRoute"][_nextRoute ?? data["routeskip"]] =
-                  widget.route;
-              _surveyData["history"]
-                  [widget.route] = {"value": _temp, "type": data["type"]};
-              //TODO: Adding Method to add temporary Values depending on type of survey
-              Navigator.push(
-                context,
-                PageRouteBuilder(
-                  pageBuilder: (BuildContext context, _, __) => SurveyCard(
-                    _nextRoute ?? data["routeskip"],
-                    widget.code,
-                    _surveyData,
-                    widget.title,
-                  ),
-                  opaque: false,
-                  transitionsBuilder:
-                      (context, animation, secondaryAnimation, child) {
-                    return FadeTransition(
-                      opacity: animation,
-                      child: child,
-                    );
-                  },
-                ),
-              );
+              switch (_nextRoute ?? data["routeskip"]) {
+                case "finish":
+                  print("za endo");
+                  break;
+                default:
+                  Navigator.pop(context);
+                  _surveyData["lastRoute"][_nextRoute ?? data["routeskip"]] =
+                      widget.route;
+                  _surveyData["history"]
+                      [widget.route] = {"value": _temp, "type": data["type"]};
+                  //TODO: Adding Method to add temporary Values depending on type of survey
+                  Navigator.push(
+                    context,
+                    PageRouteBuilder(
+                      pageBuilder: (BuildContext context, _, __) => SurveyCard(
+                        _nextRoute ?? data["routeskip"],
+                        widget.code,
+                        _surveyData,
+                        widget.title,
+                      ),
+                      opaque: false,
+                      transitionsBuilder:
+                          (context, animation, secondaryAnimation, child) {
+                        return SlideTransition(
+                          position: animation.drive(
+                              Tween(begin: Offset(0.0, 1.0), end: Offset.zero)
+                                  .chain(CurveTween(curve: Curves.ease))),
+                          child: child,
+                        );
+                      },
+                    ),
+                  );
+                  break;
+              }
             },
           ),
         ),
@@ -323,7 +352,7 @@ class _SurveyCardState extends State<SurveyCard> {
                 break;
               case ConnectionState.waiting:
                 return Center(
-                  child: Text("Loading"),
+                  child: _loading(),
                 );
                 break;
               default:
