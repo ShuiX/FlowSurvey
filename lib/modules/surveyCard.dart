@@ -44,26 +44,81 @@ class _SurveyCardState extends State<SurveyCard> {
       case 'info':
         return _contentOption(fontData, data);
         break;
+      case 'finish':
+        return _finishDialog(fontData, data);
+        break;
       default:
         return _error();
         break;
     }
   }
 
+  Widget _finishDialog(Map fontData, Map data) {}
+
   Widget _error() {
-    return Container();
+    return Container(
+      padding: EdgeInsets.only(top: 40),
+      child: Text("Error appeared, just go forward"),
+    );
   }
 
   Widget _checkboxOption(Map fontData, Map data) {
-    return Container();
+    if (_temp == null) {
+      _temp = {};
+    }
+
+    return Column(
+      children: [
+        for (var item in data["reply"])
+          ListTile(
+            title: Text(
+              item["option"],
+              style: TextStyle(fontSize: fontData["text"]),
+            ),
+            leading: Checkbox(
+              value: _temp[item["option"]],
+              onChanged: (value) {
+                setState(() {
+                  item["value"] = value;
+                });
+              },
+            ),
+          ),
+      ],
+    );
   }
 
   Widget _contentOption(Map fontData, Map data) {
-    return Container();
+    return Text(
+      data["reply"]["content"],
+      style: TextStyle(fontSize: fontData["text"]),
+    );
   }
 
   Widget _sentenceOption(Map fontData, Map data) {
-    return Container();
+    _textController.text = _temp;
+    Widget textfield(double width) {
+      return Container(
+        padding: EdgeInsets.only(top: 30),
+        width: width,
+        child: TextField(
+          controller: _textController,
+          decoration: InputDecoration(
+            border: OutlineInputBorder(),
+            labelText: 'Enter in your Answer',
+          ),
+          onChanged: (value) => _temp = value,
+        ),
+      );
+    }
+
+    return LayoutBuilder(builder: (context, constraints) {
+      if (constraints.maxWidth < 720) {
+        return textfield(200);
+      } else {
+        return textfield(600);
+      }
+    });
   }
 
   Widget _radioOption(Map fontData, Map data) {
