@@ -126,7 +126,7 @@ class _StartSurveyState extends State<StartSurvey> {
                       pageBuilder: (BuildContext context, _, __) => SurveyCard(
                         "start",
                         widget.code,
-                        widget.surveyData ?? {"lastRoute": {}, "history": {}},
+                        widget.surveyData ?? {"lastRoute": {}, "history": {}, "progress": []},
                         data["title"],
                       ),
                       opaque: false,
