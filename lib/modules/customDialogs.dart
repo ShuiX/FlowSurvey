@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 
 class CustomDialog extends StatelessWidget {
-  CustomDialog({Key key, this.title, this.content, this.dialogType, this.function})
+  CustomDialog(
+      {Key key, this.title, this.content, this.dialogType, this.function})
       : super(key: key);
 
   final String title;
@@ -28,8 +29,6 @@ class CustomDialog extends StatelessWidget {
         break;
     }
   }
-
-
 
   _simpleDialog(BuildContext context) {
     return Center(
