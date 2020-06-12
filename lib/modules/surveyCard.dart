@@ -27,6 +27,7 @@ class _SurveyCardState extends State<SurveyCard> {
     if (_surveyData["history"][widget.route] != null) {
       _temp = _surveyData["history"][widget.route]["value"];
     }
+    print(_surveyData["progress"]);
     super.initState();
   }
 
@@ -192,6 +193,7 @@ class _SurveyCardState extends State<SurveyCard> {
                   );
                   break;
                 default:
+                  _surveyData["progress"].removeLast();
                   Navigator.pop(context);
                   Navigator.push(
                     context,
@@ -229,6 +231,7 @@ class _SurveyCardState extends State<SurveyCard> {
               size: fontData["button"],
             ),
             onPressed: () {
+              _surveyData["progress"].add(widget.route);
               switch (_nextRoute ?? data["routeskip"]) {
                 case "finish":
                   print("za endo");
@@ -365,5 +368,18 @@ class _SurveyCardState extends State<SurveyCard> {
             return _mainCard(snapshot.data);
           }
         });
+  }
+}
+
+class FinishCard extends StatelessWidget {
+  final String title;
+  final Map surveyData;
+
+  FinishCard(this.title, this.surveyData);
+
+  @override
+  Widget build(BuildContext context) {
+    // TODO: implement build
+    throw UnimplementedError();
   }
 }
