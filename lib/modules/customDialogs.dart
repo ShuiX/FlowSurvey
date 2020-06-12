@@ -1,34 +1,37 @@
 import 'package:flutter/material.dart';
 
 class CustomDialog extends StatelessWidget {
-  CustomDialog({Key key, this.title, this.content, this.dialogType})
+  CustomDialog({Key key, this.title, this.content, this.dialogType, this.function})
       : super(key: key);
 
   final String title;
   final String content;
   final String dialogType;
+  final Function function;
 
   dynamic _dialogChooser(BuildContext context) {
     switch (this.dialogType) {
       case 'simple':
-        return simpleDialog(context);
+        return _simpleDialog(context);
         break;
       case 'little':
-        return aboutDialog(context);
+        return _aboutDialog(context);
         break;
       case 'redAlert':
-        return redAlertDialog(context);
+        return _redAlertDialog(context);
         break;
       case 'blueAlert':
-        return blueAlertDialog(context);
+        return _blueAlertDialog(context);
         break;
       default:
-        return simpleDialog(context);
+        return _simpleDialog(context);
         break;
     }
   }
 
-  simpleDialog(BuildContext context) {
+
+
+  _simpleDialog(BuildContext context) {
     return Center(
       child: FractionallySizedBox(
         heightFactor: 0.9,
@@ -54,7 +57,7 @@ class CustomDialog extends StatelessWidget {
     );
   }
 
-  redAlertDialog(BuildContext context) {
+  _redAlertDialog(BuildContext context) {
     return Center(
       child: Container(
         width: 200,
@@ -88,7 +91,7 @@ class CustomDialog extends StatelessWidget {
     );
   }
 
-  blueAlertDialog(BuildContext context) {
+  _blueAlertDialog(BuildContext context) {
     return Center(
       child: Container(
         width: 200,
@@ -122,7 +125,7 @@ class CustomDialog extends StatelessWidget {
     );
   }
 
-  aboutDialog(BuildContext context) {
+  _aboutDialog(BuildContext context) {
     return Center(
       child: Container(
         width: 300,
