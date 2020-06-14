@@ -242,7 +242,6 @@ class _SurveyCardState extends State<SurveyCard> {
                       widget.route;
                   _surveyData["history"]
                       [widget.route] = {"value": _temp, "type": data["type"]};
-                  //TODO: Adding Method to add temporary Values depending on type of survey
                   Navigator.push(
                     context,
                     PageRouteBuilder(
@@ -374,12 +373,87 @@ class _SurveyCardState extends State<SurveyCard> {
 class FinishCard extends StatelessWidget {
   final String title;
   final Map surveyData;
+  final String code;
 
-  FinishCard(this.title, this.surveyData);
+  FinishCard(this.title, this.code, this.surveyData);
+
+  Widget _widget(Map fontData, BuildContext context) {
+    return Stack(
+      children: [
+        Container(
+          alignment: Alignment.topLeft,
+          padding: EdgeInsets.symmetric(vertical: 20, horizontal: 20),
+          child: IconButton(
+            icon: Icon(Icons.arrow_back),
+            iconSize: fontData["button"],
+            onPressed: () {},
+          ),
+        ),
+        Container(
+          alignment: Alignment.bottomRight,
+          padding: EdgeInsets.symmetric(vertical: 15, horizontal: 20),
+          child: FloatingActionButton(
+            heroTag: "nextSurvey",
+            child: Icon(
+              Icons.arrow_forward,
+              size: fontData["button"],
+            ),
+            onPressed: () {},
+          ),
+        ),
+        Column(
+          children: [
+            Container(
+              padding: EdgeInsets.only(top: 40),
+              alignment: Alignment.center,
+              child: Text(
+                title,
+                style: TextStyle(
+                  fontSize: fontData["title"],
+                  fontWeight: FontWeight.bold,
+                  fontFamily: "BlackChancery",
+                ),
+              ),
+            ),
+            Container(
+              padding: EdgeInsets.only(top: 40, left: 30),
+              alignment: Alignment.centerLeft,
+              child: Text(
+                "That was the last question! Do you want to finish this survey or go back?",
+                style: TextStyle(
+                  fontSize: fontData["subTitle"],
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
-    throw UnimplementedError();
+    return Center(
+      child: LayoutBuilder(builder: (context, constraints) {
+        if (constraints.maxWidth < 720) {
+          return FractionallySizedBox(
+            widthFactor: 0.9,
+            heightFactor: 0.8,
+            child: _widget(
+                {"title": 25, "subTitle": 17, "text": 13, "button": 20},
+                context),
+          );
+        } else {
+          return FractionallySizedBox(
+            widthFactor: 0.8,
+            heightFactor: 0.8,
+            child: _widget(
+                {"title": 50, "subTitle": 34, "text": 20, "button": 40},
+                context),
+          );
+        }
+      }),
+    );
   }
 }
