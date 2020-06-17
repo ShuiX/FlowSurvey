@@ -27,7 +27,6 @@ class _SurveyCardState extends State<SurveyCard> {
     if (_surveyData["history"][widget.route] != null) {
       _temp = _surveyData["history"][widget.route]["value"];
     }
-    print(_surveyData["progress"]);
     super.initState();
   }
 
@@ -232,16 +231,33 @@ class _SurveyCardState extends State<SurveyCard> {
             ),
             onPressed: () {
               _surveyData["progress"].add(widget.route);
+              _surveyData["lastRoute"][_nextRoute ?? data["routeskip"]] =
+                  widget.route;
+              _surveyData["history"]
+                  [widget.route] = {"value": _temp, "type": data["type"]};
               switch (_nextRoute ?? data["routeskip"]) {
                 case "finish":
-                  print("za endo");
+                  Navigator.pop(context);
+                  Navigator.push(
+                    context,
+                    PageRouteBuilder(
+                      pageBuilder: (BuildContext context, _, __) => FinishCard(
+                          widget.title, widget.code, _surveyData, widget.route),
+                      opaque: false,
+                      transitionsBuilder:
+                          (context, animation, secondaryAnimation, child) {
+                        return SlideTransition(
+                          position: animation.drive(
+                              Tween(begin: Offset(0.0, 1.0), end: Offset.zero)
+                                  .chain(CurveTween(curve: Curves.ease))),
+                          child: child,
+                        );
+                      },
+                    ),
+                  );
                   break;
                 default:
                   Navigator.pop(context);
-                  _surveyData["lastRoute"][_nextRoute ?? data["routeskip"]] =
-                      widget.route;
-                  _surveyData["history"]
-                      [widget.route] = {"value": _temp, "type": data["type"]};
                   Navigator.push(
                     context,
                     PageRouteBuilder(
@@ -374,61 +390,119 @@ class FinishCard extends StatelessWidget {
   final String title;
   final Map surveyData;
   final String code;
+  final String lastRoute;
 
-  FinishCard(this.title, this.code, this.surveyData);
+  FinishCard(this.title, this.code, this.surveyData, this.lastRoute);
 
   Widget _widget(Map fontData, BuildContext context) {
-    return Stack(
-      children: [
-        Container(
-          alignment: Alignment.topLeft,
-          padding: EdgeInsets.symmetric(vertical: 20, horizontal: 20),
-          child: IconButton(
-            icon: Icon(Icons.arrow_back),
-            iconSize: fontData["button"],
-            onPressed: () {},
-          ),
-        ),
-        Container(
-          alignment: Alignment.bottomRight,
-          padding: EdgeInsets.symmetric(vertical: 15, horizontal: 20),
-          child: FloatingActionButton(
-            heroTag: "nextSurvey",
-            child: Icon(
-              Icons.arrow_forward,
-              size: fontData["button"],
+    return Card(
+      color: Colors.black,
+      shape: RoundedRectangleBorder(
+          side: new BorderSide(color: Colors.white, width: 2.0),
+          borderRadius: BorderRadius.circular(12.0)),
+      child: Stack(
+        children: [
+          Container(
+            alignment: Alignment.topLeft,
+            padding: EdgeInsets.symmetric(vertical: 20, horizontal: 20),
+            child: IconButton(
+              icon: Icon(Icons.arrow_back),
+              iconSize: fontData["button"],
+              onPressed: () {
+                Navigator.pop(context);
+                Navigator.push(
+                  context,
+                  PageRouteBuilder(
+                    pageBuilder: (BuildContext context, _, __) =>
+                        SurveyCard(lastRoute, code, surveyData, title),
+                    opaque: false,
+                    transitionsBuilder:
+                        (context, animation, secondaryAnimation, child) {
+                      return SlideTransition(
+                        position: animation.drive(
+                            Tween(begin: Offset(0.0, 1.0), end: Offset.zero)
+                                .chain(CurveTween(curve: Curves.ease))),
+                        child: child,
+                      );
+                    },
+                  ),
+                );
+              },
             ),
-            onPressed: () {},
           ),
-        ),
-        Column(
-          children: [
-            Container(
-              padding: EdgeInsets.only(top: 40),
-              alignment: Alignment.center,
-              child: Text(
-                title,
-                style: TextStyle(
-                  fontSize: fontData["title"],
-                  fontWeight: FontWeight.bold,
-                  fontFamily: "BlackChancery",
+          Column(
+            children: [
+              Container(
+                padding: EdgeInsets.only(top: 40),
+                alignment: Alignment.center,
+                child: Text(
+                  title,
+                  style: TextStyle(
+                    fontSize: fontData["title"],
+                    fontWeight: FontWeight.bold,
+                    fontFamily: "BlackChancery",
+                  ),
                 ),
               ),
-            ),
-            Container(
-              padding: EdgeInsets.only(top: 40, left: 30),
-              alignment: Alignment.centerLeft,
-              child: Text(
-                "That was the last question! Do you want to finish this survey or go back?",
-                style: TextStyle(
-                  fontSize: fontData["subTitle"],
-                  fontWeight: FontWeight.bold,
+              Container(
+                padding: EdgeInsets.only(top: 40, left: 30, bottom: 35),
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  "End of the Survey",
+                  style: TextStyle(
+                    fontSize: fontData["subTitle"],
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
-            ),
-          ],
-        ),
-      ],
+              Container(
+                padding: EdgeInsets.all(30),
+                child: Text(
+                  "Do you want to finish the survey or want to go back where you began?",
+                  style: TextStyle(
+                    fontSize: fontData["text"],
+                  ),
+                ),
+              ),
+              RaisedButton(
+                splashColor: Colors.black.withOpacity(0.2),
+                color: Colors.white,
+                shape: RoundedRectangleBorder(
+                    side: new BorderSide(color: Colors.white, width: 2.0),
+                    borderRadius: BorderRadius.circular(12.0)),
+                child: Container(
+                  padding: EdgeInsets.all(15),
+                  child: Text(
+                    "Go back to Start",
+                    style: TextStyle(
+                        fontSize: fontData["subTitle"], color: Colors.black),
+                  ),
+                ),
+                onPressed: () {},
+              ),
+              Container(
+                height: 20,
+              ),
+              RaisedButton(
+                splashColor: Colors.black.withOpacity(0.2),
+                color: Colors.white,
+                shape: RoundedRectangleBorder(
+                    side: new BorderSide(color: Colors.white, width: 2.0),
+                    borderRadius: BorderRadius.circular(12.0)),
+                child: Container(
+                  padding: EdgeInsets.all(15),
+                  child: Text(
+                    "Finish Survey",
+                    style: TextStyle(
+                        fontSize: fontData["subTitle"], color: Colors.black),
+                  ),
+                ),
+                onPressed: () {},
+              ),
+            ],
+          ),
+        ],
+      ),
     );
   }
 
