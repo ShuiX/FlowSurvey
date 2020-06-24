@@ -20,7 +20,38 @@ class FirebaseApp {
   }
 
   Stream<Map> surveyRouteData(String requestCode, String route) {
-    return _refSurveys.doc(requestCode).collection("survey").doc(route).onSnapshot.map((event) => event.data());
+    return _refSurveys
+        .doc(requestCode)
+        .collection("survey")
+        .doc(route)
+        .onSnapshot
+        .map((event) => event.data());
+  }
+
+  Future postSurveyResult(
+      String requestCode, String route, String type, dynamic value) async {
+    var temp = await _refSurveys
+        .doc(requestCode)
+        .collection("results")
+        .doc(route)
+        .get()
+        .then((value) => value.data());
+
+    switch (type) {
+      case "radio":
+        return _refSurveys
+            .doc(requestCode)
+            .collection("results")
+            .doc(route)
+            .update(data: {value: temp[value] + 1});
+        break;
+      default:
+        return false;
+        break;
+    }
+
+    //_refSurveys.doc(requestCode).collection("results").doc(route).update(data: {"Ja": temp["Ja"] + 1});
+
   }
 
   Future<QuerySnapshot> get userData async {
@@ -68,7 +99,10 @@ class FirebaseApp {
   Future<dynamic> deleteUser() async {
     try {
       return Future.wait([
-        _refUsers.where("email", "==", await getUserEmail()).get().then((value) {
+        _refUsers
+            .where("email", "==", await getUserEmail())
+            .get()
+            .then((value) {
           _refUsers.doc(value.docs.single.id).delete();
         }),
         _firebaseAuth.currentUser.delete(),
@@ -96,5 +130,4 @@ class FirebaseApp {
   Future<DocumentReference> addUserDB(Map<String, dynamic> data) {
     return _refUsers.add(data);
   }
-  
 }

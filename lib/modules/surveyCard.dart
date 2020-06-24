@@ -445,22 +445,13 @@ class FinishCard extends StatelessWidget {
                 ),
               ),
               Container(
-                padding: EdgeInsets.only(top: 40, left: 30, bottom: 35),
+                padding: EdgeInsets.only(top: 40, left: 30, bottom: 75),
                 alignment: Alignment.centerLeft,
                 child: Text(
-                  "End of the Survey",
+                  "End of the Survey! Do you want to finish the survey or want to go back where you began?",
                   style: TextStyle(
                     fontSize: fontData["subTitle"],
                     fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-              Container(
-                padding: EdgeInsets.all(30),
-                child: Text(
-                  "Do you want to finish the survey or want to go back where you began?",
-                  style: TextStyle(
-                    fontSize: fontData["text"],
                   ),
                 ),
               ),
@@ -478,7 +469,26 @@ class FinishCard extends StatelessWidget {
                         fontSize: fontData["subTitle"], color: Colors.black),
                   ),
                 ),
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.pop(context);
+                  Navigator.push(
+                    context,
+                    PageRouteBuilder(
+                      pageBuilder: (BuildContext context, _, __) =>
+                          SurveyCard("start", code, surveyData, title),
+                      opaque: false,
+                      transitionsBuilder:
+                          (context, animation, secondaryAnimation, child) {
+                        return SlideTransition(
+                          position: animation.drive(
+                              Tween(begin: Offset(0.0, 1.0), end: Offset.zero)
+                                  .chain(CurveTween(curve: Curves.ease))),
+                          child: child,
+                        );
+                      },
+                    ),
+                  );
+                },
               ),
               Container(
                 height: 20,
@@ -497,7 +507,23 @@ class FinishCard extends StatelessWidget {
                         fontSize: fontData["subTitle"], color: Colors.black),
                   ),
                 ),
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    PageRouteBuilder(
+                      pageBuilder: (BuildContext context, _, __) =>
+                          SubmitSurveyProcess(code, surveyData, title),
+                      opaque: false,
+                      transitionsBuilder:
+                          (context, animation, secondaryAnimation, child) {
+                        return FadeTransition(
+                          opacity: animation,
+                          child: child,
+                        );
+                      },
+                    ),
+                  );
+                },
               ),
             ],
           ),
@@ -525,6 +551,108 @@ class FinishCard extends StatelessWidget {
             child: _widget(
                 {"title": 50, "subTitle": 34, "text": 20, "button": 40},
                 context),
+          );
+        }
+      }),
+    );
+  }
+}
+
+class SubmitSurveyProcess extends StatefulWidget {
+  final String title;
+  final String code;
+  final Map surveyData;
+
+  SubmitSurveyProcess(this.code, this.surveyData, this.title);
+
+  @override
+  _SubmitSurveyProcessState createState() => _SubmitSurveyProcessState();
+}
+
+class _SubmitSurveyProcessState extends State<SubmitSurveyProcess> {
+  double _progressValue;
+
+  @override
+  void initState() {
+    _postData();
+    super.initState();
+  }
+
+  void _postData() {
+    for (var item in widget.surveyData["progress"]) {
+      FirebaseApp()
+          .postSurveyResult(
+            widget.code,
+            item,
+            widget.surveyData["history"][item]["type"],
+            widget.surveyData["history"][item]["value"],
+          )
+          .then((value) => print(value));
+    }
+  }
+
+  Widget _widget(Map fontData, BuildContext context) {
+    return Card(
+      color: Colors.black,
+      shape: RoundedRectangleBorder(
+          side: new BorderSide(color: Colors.white, width: 2.0),
+          borderRadius: BorderRadius.circular(12.0)),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          SizedBox(
+            child: CircularProgressIndicator(
+              value: _progressValue,
+              strokeWidth: fontData["circleThick"],
+            ),
+            height: fontData["circleSize"],
+            width: fontData["circleSize"],
+          ),
+          Container(
+            height: MediaQuery.of(context).size.height * 0.05,
+          ),
+          Text(
+            "Loading",
+            style: TextStyle(
+              fontStyle: FontStyle.italic,
+              fontSize: fontData["text"],
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: LayoutBuilder(builder: (context, constraints) {
+        if (constraints.maxWidth < 720) {
+          return FractionallySizedBox(
+            widthFactor: 0.9,
+            heightFactor: 0.8,
+            child: _widget({
+              "title": 25,
+              "subTitle": 17,
+              "text": 13,
+              "button": 20,
+              "circleSize": 100,
+              "circleThick": 10,
+            }, context),
+          );
+        } else {
+          return FractionallySizedBox(
+            widthFactor: 0.8,
+            heightFactor: 0.8,
+            child: _widget({
+              "title": 50,
+              "subTitle": 34,
+              "text": 20,
+              "button": 40,
+              "circleSize": 200,
+              "circleThick": 15,
+            }, context),
           );
         }
       }),
