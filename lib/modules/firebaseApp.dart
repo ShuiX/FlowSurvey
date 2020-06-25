@@ -45,15 +45,15 @@ class FirebaseApp {
         case "radio":
           return doc
               .update(data: {value: temp[value] + 1})
-              .then((value) => true)
-              .catchError((onError) => false);
+              .then((_) => true)
+              .catchError((_) => false);
           break;
         case "sentence":
-        temp["sentenceArray"].add(value);
-        return doc
-              .update(data: {"sentenceArray": temp})
-              .then((value) => true)
-              .catchError((onError) => false);
+          temp["sentenceArray"].add(value);
+          return doc
+              .update(data: {"sentenceArray": temp["sentenceArray"]})
+              .then((_) => true)
+              .catchError((_) => false);
           break;
         default:
           return false;
