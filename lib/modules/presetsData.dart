@@ -2,6 +2,7 @@ class PresetsData {
   PresetsData._();
 
   static String noContext = "There is no context in your Input";
+  static String failedPostingData = "Failed Uploading Data";
   static String somethingFailed = "Something failed in the Process";
   static String loginFailed = "User data doesnt exist or is invalid";
   static String registringUserExists = "This E-Mail already exists";
