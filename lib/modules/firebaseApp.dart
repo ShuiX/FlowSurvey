@@ -28,30 +28,33 @@ class FirebaseApp {
         .map((event) => event.data());
   }
 
-  Future postSurveyResult(
+  Future<bool> postSurveyResult(
       String requestCode, String route, String type, dynamic value) async {
-    var temp = await _refSurveys
-        .doc(requestCode)
-        .collection("results")
-        .doc(route)
-        .get()
-        .then((value) => value.data());
+    if (value != null) {
+      Map temp = await _refSurveys
+          .doc(requestCode)
+          .collection("results")
+          .doc(route)
+          .get()
+          .then((value) => value.data());
 
-    switch (type) {
-      case "radio":
-        return _refSurveys
-            .doc(requestCode)
-            .collection("results")
-            .doc(route)
-            .update(data: {value: temp[value] + 1});
-        break;
-      default:
-        return false;
-        break;
+      DocumentReference doc =
+          _refSurveys.doc(requestCode).collection("results").doc(route);
+
+      switch (type) {
+        case "radio":
+          return doc
+              .update(data: {value: temp[value] + 1})
+              .then((value) => true)
+              .catchError((onError) => false);
+          break;
+        default:
+          return false;
+          break;
+      }
+    } else {
+      return true;
     }
-
-    //_refSurveys.doc(requestCode).collection("results").doc(route).update(data: {"Ja": temp["Ja"] + 1});
-
   }
 
   Future<QuerySnapshot> get userData async {

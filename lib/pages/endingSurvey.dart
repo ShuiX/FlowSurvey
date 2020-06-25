@@ -3,12 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:va_flutter_project/modules/firebaseApp.dart';
 
 class EndingSurvey extends StatefulWidget {
-  final String endingDescription;
   final String code;
-  final List results;
 
-  EndingSurvey({Key key, this.endingDescription, this.code, this.results})
-      : super(key: key);
+  EndingSurvey(this.code);
 
   @override
   _EndingSurveyState createState() => _EndingSurveyState();
@@ -17,9 +14,7 @@ class EndingSurvey extends StatefulWidget {
 class _EndingSurveyState extends State<EndingSurvey> {
   @override
   void initState() {
-    FirebaseApp().surveyExist(widget.code).then((onValue) {
-      
-    });
+    FirebaseApp().surveyExist(widget.code).then((onValue) {});
 
     super.initState();
   }
@@ -28,18 +23,37 @@ class _EndingSurveyState extends State<EndingSurvey> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.black,
-      body: Center(
-        child: Padding(
-          padding: EdgeInsets.all(20),
-          child: Text(
-            widget.endingDescription,
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 28,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-        ),
+      body: StreamBuilder(
+        stream: FirebaseApp().surveyStart(widget.code),
+        builder: (context, snapshot) {
+          switch (snapshot.connectionState) {
+            case ConnectionState.active:
+              return Center(
+                child: Padding(
+                  padding: EdgeInsets.all(20),
+                  child: Text(
+                    snapshot.data["endingdescription"],
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 28,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              );
+              break;
+            case ConnectionState.waiting:
+              return Center(
+                child: Text("Loading"),
+              );
+              break;
+            default:
+              return Center(
+                child: Text("Error"),
+              );
+              break;
+          }
+        },
       ),
       floatingActionButton: Stack(
         children: <Widget>[

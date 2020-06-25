@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:va_flutter_project/modules/customDialogs.dart';
 import 'package:va_flutter_project/modules/firebaseApp.dart';
+import 'package:va_flutter_project/modules/presetsData.dart';
+import 'package:va_flutter_project/pages/endingSurvey.dart';
 import 'package:va_flutter_project/pages/startSurvey.dart';
 
 class SurveyCard extends StatefulWidget {
@@ -579,15 +582,36 @@ class _SubmitSurveyProcessState extends State<SubmitSurveyProcess> {
   }
 
   void _postData() {
-    for (var item in widget.surveyData["progress"]) {
+    for (var i = 0; i < widget.surveyData["progress"].length; i++) {
       FirebaseApp()
           .postSurveyResult(
-            widget.code,
-            item,
-            widget.surveyData["history"][item]["type"],
-            widget.surveyData["history"][item]["value"],
-          )
-          .then((value) => print(value));
+        widget.code,
+        widget.surveyData["progress"][i],
+        widget.surveyData["history"][widget.surveyData["progress"][i]]["type"],
+        widget.surveyData["history"][widget.surveyData["progress"][i]]["value"],
+      )
+          .then((value) {
+        if (value != false) {
+          setState(() {
+            _progressValue = ++i / widget.surveyData["progress"].length;
+          });
+        } else {
+          Navigator.of(context).popUntil((route) => route.isFirst);
+          showDialog(
+            context: context,
+            builder: (BuildContext context) => CustomDialog(
+              title: "FlowSurvey",
+              content: PresetsData.failedPostingData,
+              dialogType: "redAlert",
+            ),
+          );
+        }
+        if (_progressValue == 1) {
+          Navigator.of(context).popUntil((route) => route.isFirst);
+          Navigator.push(context,
+              MaterialPageRoute(builder: (_) => EndingSurvey(widget.code)));
+        }
+      });
     }
   }
 
