@@ -48,6 +48,13 @@ class FirebaseApp {
               .then((value) => true)
               .catchError((onError) => false);
           break;
+        case "sentence":
+        temp["sentenceArray"].add(value);
+        return doc
+              .update(data: {"sentenceArray": temp})
+              .then((value) => true)
+              .catchError((onError) => false);
+          break;
         default:
           return false;
           break;
