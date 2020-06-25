@@ -39,13 +39,13 @@ class _SurveyCardState extends State<SurveyCard> {
         return FractionallySizedBox(
           widthFactor: 9,
           heightFactor: 8,
-          child: Text("Loading"),
+          child: CircularProgressIndicator(),
         );
       } else {
         return FractionallySizedBox(
           widthFactor: 8,
           heightFactor: 8,
-          child: Text("Loading"),
+          child: CircularProgressIndicator(),
         );
       }
     });
