@@ -123,7 +123,14 @@ class _SurveyCardState extends State<SurveyCard> {
             border: OutlineInputBorder(),
             labelText: 'Enter in your Answer',
           ),
-          onChanged: (value) => _temp = value,
+          onChanged: (value) {
+            if (value == "") {
+              _nextRoute = data["followroute"];
+            } else {
+              _nextRoute = data["routeskip"];
+            }
+            _temp = value;
+          },
         ),
       );
     }
