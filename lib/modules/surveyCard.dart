@@ -124,7 +124,7 @@ class _SurveyCardState extends State<SurveyCard> {
             labelText: 'Enter in your Answer',
           ),
           onChanged: (value) {
-            if (value == "") {
+            if (value != "") {
               _nextRoute = data["followroute"];
             } else {
               _nextRoute = data["routeskip"];
