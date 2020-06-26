@@ -106,7 +106,7 @@ class _SurveyCardState extends State<SurveyCard> {
 
   Widget _contentOption(Map fontData, Map data) {
     return Text(
-      data["reply"]["content"],
+      data["content"],
       style: TextStyle(fontSize: fontData["text"]),
     );
   }
