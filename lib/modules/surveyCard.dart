@@ -480,6 +480,7 @@ class FinishCard extends StatelessWidget {
                   ),
                 ),
                 onPressed: () {
+                  surveyData["progress"] = [];
                   Navigator.pop(context);
                   Navigator.push(
                     context,
