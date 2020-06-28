@@ -447,6 +447,9 @@ class _SignUpState extends State<SignUp> {
         labeltext == "E-Mail") {
       return "Invalid E-Mail format";
     }
+    if (labeltext == "Password" && inputData.length < 6) {
+      return "Password has to have more than 6 characters";
+    }
     return null;
   }
 
@@ -511,6 +514,64 @@ class _SignUpState extends State<SignUp> {
     );
   }
 
+  Widget _signUpInput(double titleSize, double textSize, widthFactor) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        _inputText(
+          "Username",
+          titleSize,
+          textSize,
+          _usernameTextController,
+          false,
+          "Create your Username here",
+          _usernameValid,
+          widthFactor,
+        ),
+        _inputText(
+          "E-Mail",
+          titleSize,
+          textSize,
+          _emailTextController,
+          false,
+          "Enter your E-Mail",
+          _emailValid,
+          widthFactor,
+        ),
+        _inputText(
+          "Password",
+          titleSize,
+          textSize,
+          _passwordTextController,
+          true,
+          "Enter a Password",
+          _passwordValid,
+          widthFactor,
+        ),
+        _inputText(
+          "Name",
+          titleSize,
+          textSize,
+          _nameTextController,
+          false,
+          "Enter Name here",
+          _nameValid,
+          widthFactor,
+        ),
+        _inputText(
+          "Surname",
+          titleSize,
+          textSize,
+          _surnameTextController,
+          false,
+          "Enter Surname here",
+          _surnameValid,
+          widthFactor,
+        ),
+      ],
+    );
+  }
+
   Widget _signUpWindowMobile(double titleSize, double textSize) {
     return Center(
       child: SingleChildScrollView(
@@ -526,56 +587,7 @@ class _SignUpState extends State<SignUp> {
               ),
               textAlign: TextAlign.center,
             ),
-            _inputText(
-              "Username",
-              titleSize,
-              textSize,
-              _usernameTextController,
-              false,
-              "Create your Username here",
-              _usernameValid,
-              0.7,
-            ),
-            _inputText(
-              "E-Mail",
-              titleSize,
-              textSize,
-              _emailTextController,
-              false,
-              "Enter your E-Mail",
-              _emailValid,
-              0.7,
-            ),
-            _inputText(
-              "Password",
-              titleSize,
-              textSize,
-              _passwordTextController,
-              true,
-              "Enter a Password",
-              _passwordValid,
-              0.7,
-            ),
-            _inputText(
-              "Name",
-              titleSize,
-              textSize,
-              _nameTextController,
-              false,
-              "Enter Name here",
-              _nameValid,
-              0.7,
-            ),
-            _inputText(
-              "Surname",
-              titleSize,
-              textSize,
-              _surnameTextController,
-              false,
-              "Enter Surname here",
-              _surnameValid,
-              0.7,
-            ),
+            _signUpInput(titleSize, textSize, 0.7),
             AnimatedOpacity(
               opacity: _submitOpacity,
               duration: Duration(milliseconds: 500),
@@ -592,7 +604,7 @@ class _SignUpState extends State<SignUp> {
   }
 
   Widget _signUpWindowDesktop(
-      double titleSize, double textSize, double widthFactor) {
+      double titleSize, double textSize) {
     return Center(
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -636,61 +648,7 @@ class _SignUpState extends State<SignUp> {
           ),
           Expanded(
             flex: 2,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                _inputText(
-                  "Username",
-                  titleSize,
-                  textSize,
-                  _usernameTextController,
-                  false,
-                  "Create your Username here",
-                  _usernameValid,
-                  0.2,
-                ),
-                _inputText(
-                  "E-Mail",
-                  titleSize,
-                  textSize,
-                  _emailTextController,
-                  false,
-                  "Enter your E-Mail",
-                  _emailValid,
-                  0.2,
-                ),
-                _inputText(
-                  "Password",
-                  titleSize,
-                  textSize,
-                  _passwordTextController,
-                  true,
-                  "Enter a Password",
-                  _passwordValid,
-                  0.2,
-                ),
-                _inputText(
-                  "Name",
-                  titleSize,
-                  textSize,
-                  _nameTextController,
-                  false,
-                  "Enter Name here",
-                  _nameValid,
-                  0.2,
-                ),
-                _inputText(
-                  "Surname",
-                  titleSize,
-                  textSize,
-                  _surnameTextController,
-                  false,
-                  "Enter Surname here",
-                  _surnameValid,
-                  0.2,
-                ),
-              ],
-            ),
+            child: _signUpInput(titleSize, textSize, 0.2),
           ),
         ],
       ),
@@ -718,7 +676,7 @@ class _SignUpState extends State<SignUp> {
               return FractionallySizedBox(
                 widthFactor: 0.6,
                 heightFactor: 0.6,
-                child: _signUpWindowDesktop(45, 25, 0.5),
+                child: _signUpWindowDesktop(45, 25),
               );
             }
           }),
