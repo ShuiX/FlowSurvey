@@ -471,9 +471,10 @@ class _SignUpState extends State<SignUp> {
       TextEditingController textEditingController,
       bool obsecure,
       String hintText,
-      bool validation) {
+      bool validation,
+      double widthFactor) {
     return Container(
-      width: MediaQuery.of(context).size.width * 0.2,
+      width: MediaQuery.of(context).size.width * widthFactor,
       padding: EdgeInsets.symmetric(horizontal: 20),
       child: TextField(
         obscureText: obsecure,
@@ -512,16 +513,80 @@ class _SignUpState extends State<SignUp> {
 
   Widget _signUpWindowMobile(double titleSize, double textSize) {
     return Center(
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Text(
-            "Mobile",
-            style: TextStyle(
-              color: Colors.black,
+      child: SingleChildScrollView(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              "Sign Up",
+              style: TextStyle(
+                color: Colors.black,
+                fontSize: titleSize,
+                fontWeight: FontWeight.bold,
+              ),
+              textAlign: TextAlign.center,
             ),
-          ),
-        ],
+            _inputText(
+              "Username",
+              titleSize,
+              textSize,
+              _usernameTextController,
+              false,
+              "Create your Username here",
+              _usernameValid,
+              0.7,
+            ),
+            _inputText(
+              "E-Mail",
+              titleSize,
+              textSize,
+              _emailTextController,
+              false,
+              "Enter your E-Mail",
+              _emailValid,
+              0.7,
+            ),
+            _inputText(
+              "Password",
+              titleSize,
+              textSize,
+              _passwordTextController,
+              true,
+              "Enter a Password",
+              _passwordValid,
+              0.7,
+            ),
+            _inputText(
+              "Name",
+              titleSize,
+              textSize,
+              _nameTextController,
+              false,
+              "Enter Name here",
+              _nameValid,
+              0.7,
+            ),
+            _inputText(
+              "Surname",
+              titleSize,
+              textSize,
+              _surnameTextController,
+              false,
+              "Enter Surname here",
+              _surnameValid,
+              0.7,
+            ),
+            AnimatedOpacity(
+              opacity: _submitOpacity,
+              duration: Duration(milliseconds: 500),
+              child: RaisedButton(
+                child: Text("Submit"),
+                color: Colors.blue,
+                onPressed: () => _signUp(),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -582,6 +647,7 @@ class _SignUpState extends State<SignUp> {
                   false,
                   "Create your Username here",
                   _usernameValid,
+                  0.2,
                 ),
                 _inputText(
                   "E-Mail",
@@ -591,6 +657,7 @@ class _SignUpState extends State<SignUp> {
                   false,
                   "Enter your E-Mail",
                   _emailValid,
+                  0.2,
                 ),
                 _inputText(
                   "Password",
@@ -600,6 +667,7 @@ class _SignUpState extends State<SignUp> {
                   true,
                   "Enter a Password",
                   _passwordValid,
+                  0.2,
                 ),
                 _inputText(
                   "Name",
@@ -609,6 +677,7 @@ class _SignUpState extends State<SignUp> {
                   false,
                   "Enter Name here",
                   _nameValid,
+                  0.2,
                 ),
                 _inputText(
                   "Surname",
@@ -618,8 +687,8 @@ class _SignUpState extends State<SignUp> {
                   false,
                   "Enter Surname here",
                   _surnameValid,
+                  0.2,
                 ),
-                RaisedButton(onPressed: null)
               ],
             ),
           ),
