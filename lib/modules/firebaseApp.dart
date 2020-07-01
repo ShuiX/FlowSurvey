@@ -64,8 +64,12 @@ class FirebaseApp {
     }
   }
 
-  Future<QuerySnapshot> get userData async {
-    return _refUsers.where("email", "==", await getUserEmail()).get();
+  Stream<Map> get userData {
+    return _refUsers
+        .doc(_firebaseAuth.currentUser.uid)
+        .get()
+        .asStream()
+        .map((event) => event.data());
   }
 
   Future<UserCredential> signInWithEmail(String email, String password) async {
@@ -109,12 +113,7 @@ class FirebaseApp {
   Future<dynamic> deleteUser() async {
     try {
       return Future.wait([
-        _refUsers
-            .where("email", "==", await getUserEmail())
-            .get()
-            .then((value) {
-          _refUsers.doc(value.docs.single.id).delete();
-        }),
+        _refUsers.doc(_firebaseAuth.currentUser.uid).delete(),
         _firebaseAuth.currentUser.delete(),
       ]);
     } catch (e) {
@@ -129,15 +128,11 @@ class FirebaseApp {
     return currentUser != null;
   }
 
-  Future<String> getUserEmail() async {
-    return _firebaseAuth.currentUser.email;
-  }
-
   Future<User> getUser() async {
     return _firebaseAuth.currentUser;
   }
 
   Future<DocumentReference> addUserDB(Map<String, dynamic> data) {
-    return _refUsers.add(data);
+    return _refUsers.doc(data["uid"]).set(data);
   }
 }

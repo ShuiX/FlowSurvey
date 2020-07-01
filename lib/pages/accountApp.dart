@@ -417,6 +417,7 @@ class _SignUpState extends State<SignUp> {
               ),
             );
           }).then((value) {
+            data["uid"] = value.user.uid;
             if (errorcatch == false) {
               FirebaseApp().addUserDB(data).then((value) {
                 Navigator.pop(context);
@@ -603,8 +604,7 @@ class _SignUpState extends State<SignUp> {
     );
   }
 
-  Widget _signUpWindowDesktop(
-      double titleSize, double textSize) {
+  Widget _signUpWindowDesktop(double titleSize, double textSize) {
     return Center(
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -880,8 +880,9 @@ class _AccountPageState extends State<AccountPage> {
       backgroundColor: Colors.black,
       body: Center(
         child: StreamBuilder(
-            stream: FirebaseApp().userData.asStream(),
+            stream: FirebaseApp().userData,
             builder: (context, snapshot) {
+              print(snapshot.data);
               switch (snapshot.connectionState) {
                 case ConnectionState.done:
                   return Card(
@@ -895,7 +896,7 @@ class _AccountPageState extends State<AccountPage> {
                           widthFactor: 0.9,
                           heightFactor: 0.75,
                           child: _accountContent(
-                            snapshot.data.docs.single.data(),
+                            snapshot.data,
                             25,
                             15,
                             11,
@@ -909,7 +910,7 @@ class _AccountPageState extends State<AccountPage> {
                           widthFactor: 0.6,
                           heightFactor: 0.6,
                           child: _accountContent(
-                            snapshot.data.docs.single.data(),
+                            snapshot.data,
                             50,
                             30,
                             16,
