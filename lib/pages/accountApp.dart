@@ -384,7 +384,7 @@ class _SignUpState extends State<SignUp> {
         _validateInputData("E-Mail", _emailTextController.text) == null &&
         _surnameTextController.text != "" &&
         _nameTextController.text != "" &&
-        _passwordTextController.text != "" &&
+        _validateInputData("Password", _passwordTextController.text) == null &&
         _submitOpacity == 1) {
       Map<String, dynamic> data = {
         "email": _emailTextController.text,
